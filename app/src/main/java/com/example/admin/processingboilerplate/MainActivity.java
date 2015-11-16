@@ -27,6 +27,7 @@ package com.example.admin.processingboilerplate;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -42,6 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -123,18 +125,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // if data was loaded, print it on the screen
+            textFont(font, fontsize);
+            int y = fontsize * 8;
+            for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
+                fill(128, 0, 0); text(entry.getKey().toString(), 10, y);
+                fill(0, 0, 128); text(entry.getValue().toString(), 180, y);
+                y += fontsize;
+            }
+            fill(128, 0, 0); text("fingerprint", 10, y); fill(0, 0, 128); text(Build.FINGERPRINT, 180, y); y += fontsize;
+            fill(128, 0, 0); text("device", 10, y); fill(0, 0, 128); text(Build.DEVICE, 180, y); y += fontsize;
+            fill(128, 0, 0); text("model", 10, y); fill(0, 0, 128); text(Build.MODEL, 180, y); y += fontsize;
+            fill(128, 0, 0); text("product", 10, y); fill(0, 0, 128); text(Build.PRODUCT, 180, y); y += fontsize;
             if (client_info != null) {
-                textFont(font, fontsize);
                 Iterator<String> i = client_info.keys();
-                int y = fontsize * 8;
                 textSize(fontsize);
                 while (i.hasNext()) try {
                     String key = i.next();
-                    String value = client_info.getString(key);
-                    fill(128, 0, 0);
-                    text(key, 10, y);
-                    fill(0, 0, 128);
-                    text(value, 180, y);
+                    fill(128, 0, 0); text(key, 10, y);
+                    fill(0, 0, 128); text(client_info.getString(key), 180, y);
                     y += fontsize;
                 } catch (JSONException e) {
                     Log.e("drawData", e.getMessage(), e);
@@ -204,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             Log.e("loadJson", e.getMessage(), e);
-        };
+        }
         return sb;
     }
 }
