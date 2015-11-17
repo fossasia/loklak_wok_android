@@ -36,16 +36,8 @@ import android.view.WindowManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -56,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
     // defined as global static objects to prevent that they are computed again when device is turned
     public static JSONObject client_info = null;
     public static PFont font = null;
+
+    public static class Button {
+        int x, y, w, h;
+        String name;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             dataView = true;
             if (client_info != null) return;
             Log.d("loadData", "started");
-            JSONObject json = loadJson("http://loklak.org/api/status.json");
+            JSONObject json = JsonIO.loadJson("http://loklak.org/api/status.json");
             Log.d("loadData", "loaded, " + json.length() + " objects");
             if (json != null) try {
                 client_info = json.getJSONObject("client_info");
@@ -172,47 +169,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static JSONObject loadJson(String url) {
-        StringBuilder sb = loadString(url);
-        if (sb == null || sb.length() == 0) return new JSONObject();
-        JSONObject json = null;
-        try {
-            json = new JSONObject(sb.toString());
-            return json;
-        } catch (JSONException e) {
-            Log.e("loadJson", e.getMessage(), e);
-            return new JSONObject();
-        }
-    }
 
-    public static StringBuilder loadString(String url) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            URLConnection uc = (new URL(url)).openConnection();
-            HttpURLConnection con = url.startsWith("https") ? (HttpsURLConnection) uc : (HttpURLConnection) uc;
-            con.setReadTimeout(6000);
-            con.setConnectTimeout(6000);
-            con.setRequestMethod("GET");
-            con.setDoInput(true);
-            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            BufferedReader br = null;
-            try {
-                br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-                String s;
-                while ((s = br.readLine()) != null) sb.append(s).append('\n');
-            } catch (IOException e) {
-                Log.e("loadJson", e.getMessage(), e);
-            } finally {
-                try {
-                    if (br != null) br.close();
-                    con.disconnect();
-                } catch (IOException e) {
-                    Log.e("loadJson", e.getMessage(), e);
-                }
-            }
-        } catch (IOException e) {
-            Log.e("loadJson", e.getMessage(), e);
-        }
-        return sb;
-    }
 }
