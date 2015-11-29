@@ -1,4 +1,4 @@
-package com.example.admin.processingboilerplate;
+package org.loklak.android.wok;
 
 import org.junit.Test;
 
