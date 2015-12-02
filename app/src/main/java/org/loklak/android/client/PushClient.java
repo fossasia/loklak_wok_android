@@ -33,24 +33,21 @@ public class PushClient {
     /**
      * transmit the timeline to several hosts
      * @param timeline
-     * @param hoststubs a list of host stubs, i.e. ["http://remoteserver.eu"]
      * @return the json object from the host api if the transfer was successfull or null otherwise
      */
-    public static JSONObject push(String[] hoststubs, Timeline timeline) {
+    public static JSONObject push(String hoststub, Timeline timeline) {
         // transmit the timeline
         assert timeline.size() != 0;
         if (timeline.size() == 0) return null;
 
         try {
-            for (String hoststub: hoststubs) {
-                if (hoststub.endsWith("/")) hoststub = hoststub.substring(0, hoststub.length() - 1);
-                JSONObject json = JsonIO.pushJson(hoststub + "/api/push.json", "data", timeline.toJSON(false));
-                if (json != null) return json;
-            }
-            return null;
+            if (hoststub.endsWith("/")) hoststub = hoststub.substring(0, hoststub.length() - 1);
+            JSONObject json = JsonIO.pushJson(hoststub + "/api/push.json", "data", timeline.toJSON(false));
+            if (json != null) return json;
         } catch (JSONException e) {
             Log.d("PushClient", e.getMessage(), e);
             return null;
         }
+        return null;
     }
 }

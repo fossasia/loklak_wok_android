@@ -91,6 +91,53 @@ public class MessageEntry extends AbstractIndexEntry {
         this.hashtags = new String[0];
     }
 
+    public MessageEntry(JSONObject json) {
+        Object created_at_obj = lazyGet(json, "created_at"); this.created_at = parseDate(created_at_obj);
+        Object on_obj = lazyGet(json, "on"); this.on = on_obj == null ? null : parseDate(on);
+        Object to_obj = lazyGet(json, "to"); this.to = to_obj == null ? null : parseDate(to);
+        String source_type_string = (String) lazyGet(json, "source_type");
+        String provider_type_string = (String) lazyGet(json, "provider_type");
+        this.provider_hash = (String) lazyGet(json, "provider_hash");
+        this.screen_name = (String) lazyGet(json, "screen_name");
+        this.retweet_from = (String) lazyGet(json, "retweet_from");
+        this.id_str = (String) lazyGet(json, "id_str");
+        this.text = (String) lazyGet(json, "text");
+        try {
+            this.status_id_url = new URL((String) lazyGet(json, "link"));
+        } catch (MalformedURLException e) {
+            this.status_id_url = null;
+        }
+        this.retweet_count = parseLong((Number) lazyGet(json, "retweet_count"));
+        this.favourites_count = parseLong((Number) lazyGet(json, "favourites_count"));
+        this.images = parseArrayList(lazyGet(json, "images"));
+        this.audio = parseArrayList(lazyGet(json, "audio"));
+        this.videos = parseArrayList(lazyGet(json, "videos"));
+        this.place_id = parseString((String) lazyGet(json, "place_id"));
+        this.place_name = parseString((String) lazyGet(json, "place_name"));
+        this.place_country = parseString((String) lazyGet(json, "place_country"));
+        if (this.place_country != null && this.place_country.length() != 2) this.place_country = null;
+
+        // optional location
+        Object location_point_obj = lazyGet(json, "location_point");
+        Object location_radius_obj = lazyGet(json, "location_radius");
+        Object location_mark_obj = lazyGet(json, "location_mark");
+        Object location_source_obj = lazyGet(json, "location_source");
+        if (location_point_obj == null || location_mark_obj == null ||
+                !(location_point_obj instanceof List<?>) ||
+                !(location_mark_obj instanceof List<?>)) {
+            this.location_point = null;
+            this.location_radius = 0;
+            this.location_mark = null;
+        } else {
+            this.location_point = new double[]{(Double) ((List<?>) location_point_obj).get(0), (Double) ((List<?>) location_point_obj).get(1)};
+            this.location_radius = (int) parseLong((Number) location_radius_obj);
+            this.location_mark = new double[]{(Double) ((List<?>) location_mark_obj).get(0), (Double) ((List<?>) location_mark_obj).get(1)};
+        }
+
+        // load enriched data
+        enrich();
+    }
+
     public MessageEntry(Map<String, Object> map) {
         Object created_at_obj = map.get("created_at"); this.created_at = parseDate(created_at_obj);
         Object on_obj = map.get("on"); this.on = on_obj == null ? null : parseDate(on);
@@ -388,67 +435,6 @@ public class MessageEntry extends AbstractIndexEntry {
         while (m.find()) l.add(m.group(g));
         for (String r: l) {int i = s.indexOf(r); s.replace(i, i + r.length(), "");}
         return l;
-    }
-
-    public Map<String, Object> toMap() {
-        return toMap(null, true, Integer.MAX_VALUE, ""); // very important to include calculated data here because that is written into the index using the abstract index factory
-    }
-
-    public Map<String, Object> toMap(final UserEntry user, final boolean calculatedData, final int iflinkexceedslength, final String urlstub) {
-        Map<String, Object> m = new LinkedHashMap<String, Object>();
-
-        // tweet data
-        m.put("created_at", utcFormatter.print(getCreatedAt().getTime()));
-        if (this.on != null) m.put("on", utcFormatter.print(this.on.getTime()));
-        if (this.to != null) m.put("to", utcFormatter.print(this.to.getTime()));
-        m.put("screen_name", this.screen_name);
-        if (this.retweet_from != null && this.retweet_from.length() > 0) m.put("retweet_from", this.retweet_from);
-        m.put("text", this.getText(iflinkexceedslength, urlstub)); // the tweet; the cleanup is a helper function which cleans mistakes from the past in scraping
-        if (this.status_id_url != null) m.put("link", this.status_id_url.toExternalForm());
-        m.put("id_str", this.id_str);
-        if (this.canonical_id != null) m.put("canonical_id", this.canonical_id);
-        if (this.parent != null) m.put("parent", this.parent);
-        if (this.provider_hash != null && this.provider_hash.length() > 0) m.put("provider_hash", this.provider_hash);
-        m.put("retweet_count", this.retweet_count);
-        m.put("favourites_count", this.favourites_count); // there is a slight inconsistency here in the plural naming but thats how it is noted in the twitter api
-        m.put("images", this.images);
-        m.put("images_count", this.images.size());
-        m.put("audio", this.audio);
-        m.put("audio_count", this.audio.size());
-        m.put("videos", this.videos);
-        m.put("videos_count", this.videos.size());
-        m.put("place_name", this.place_name);
-        m.put("place_id", this.place_id);
-
-        // add statistic/calculated data
-        if (calculatedData) {
-            // location data
-            if (this.place_country != null && this.place_country.length() == 2) {
-                m.put("place_country_code", this.place_country);
-            }
-
-            // add optional location data. This is written even if calculatedData == false if the source is from REPORT to prevent that it is lost
-            if (this.location_point != null && this.location_point.length == 2 && this.location_mark != null && this.location_mark.length == 2) {
-                // reference for this format: https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-geo-point-type.html#_lat_lon_as_array_5
-                m.put("location_point", this.location_point); // [longitude, latitude]
-                m.put("location_radius", this.location_radius);
-                m.put("location_mark", this.location_mark);
-            }
-
-            // redundant data for enhanced navigation with aggregations
-            m.put("hosts", this.hosts);
-            m.put("hosts_count", this.hosts.length);
-            m.put("links", this.links);
-            m.put("links_count", this.links.length);
-            m.put("mentions", this.mentions);
-            m.put("mentions_count", this.mentions.length);
-            m.put("hashtags", this.hashtags);
-            m.put("hashtags_count", this.hashtags.length);
-        }
-
-        // add user
-        if (user != null) m.put("user", user.toMap());
-        return m;
     }
 
     public JSONObject toJSON(final UserEntry user, final boolean calculatedData, final int iflinkexceedslength, final String urlstub) throws JSONException {

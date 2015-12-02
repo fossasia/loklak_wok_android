@@ -27,6 +27,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 import org.loklak.android.client.PushClient;
+import org.loklak.android.client.SearchClient;
 import org.loklak.android.client.SuggestClient;
 import org.loklak.android.data.MessageEntry;
 import org.loklak.android.data.QueryEntry;
@@ -34,6 +35,7 @@ import org.loklak.android.data.ResultList;
 import org.loklak.android.data.Timeline;
 import org.loklak.android.harvester.TwitterScraper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -202,6 +204,14 @@ public class Harvester {
     private static class PushThread extends AsyncTask<Timeline, Void, Void> {
         @Override
         protected Void doInBackground(Timeline... params) {
+            /*
+            try {
+                Timeline ttl = SearchClient.search(backend, "ccc", Timeline.Order.CREATED_AT, "cache", 100, 0, 4000);
+                for (MessageEntry me: ttl) {
+                    Log.d("ttl", me.getText(100000, null));
+                }
+            } catch (IOException e) {}
+            */
             isPushing = true;
             Timeline tl = params[0];
             tl.setPeerId(apphash);
@@ -210,7 +220,7 @@ public class Harvester {
                 for (int i = 0; i < 5; i++) {
                     try {
                         long start = System.currentTimeMillis();
-                        JSONObject json = PushClient.push(new String[]{backend}, tl);
+                        JSONObject json = PushClient.push(backend, tl);
                         if (json != null) {
                             Log.i("PushThread", "pushed  " + tl.size() + " messages to backend in " + (System.currentTimeMillis() - start) + " ms; pendingQueries = " + pendingQueries.size() + ", pendingContext = " + pendingContext.size() + ", harvestedContext = " + harvestedContext.size());
 

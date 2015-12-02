@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 /**
@@ -45,6 +46,21 @@ public class UserEntry extends AbstractIndexEntry {
 
     public UserEntry(final Map<String, Object> map) {
         this.map = map;
+        Date now = new Date();
+        map.put(UserFactory.field_appearance_first, parseDate(map.get(UserFactory.field_appearance_first), now));
+        map.put(UserFactory.field_appearance_latest, parseDate(map.get(UserFactory.field_appearance_latest), now));
+    }
+
+    public UserEntry(final JSONObject json) {
+        this.map = new LinkedHashMap<String, Object>();
+        Iterator<String> ki =json.keys();
+        while (ki.hasNext()) {
+            String key = ki.next();
+            try {
+                Object val = json.get(key);
+                this.map.put(key, val);
+            } catch (JSONException e) {}
+        }
         Date now = new Date();
         map.put(UserFactory.field_appearance_first, parseDate(map.get(UserFactory.field_appearance_first), now));
         map.put(UserFactory.field_appearance_latest, parseDate(map.get(UserFactory.field_appearance_latest), now));
@@ -96,19 +112,6 @@ public class UserEntry extends AbstractIndexEntry {
 
     public Date getAppearanceLatest() {
         return parseDate(this.map.get(UserFactory.field_appearance_latest));
-    }
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> m = new LinkedHashMap<String, Object>();
-        m.put(UserFactory.field_screen_name, getScreenName());
-        m.put(UserFactory.field_user_id, getUserId());
-        m.put(UserFactory.field_name, getName());
-        if (this.map.containsKey(UserFactory.field_profile_image_url_http)) m.put(UserFactory.field_profile_image_url_http, this.map.get(UserFactory.field_profile_image_url_http));
-        if (this.map.containsKey(UserFactory.field_profile_image_url_https)) m.put(UserFactory.field_profile_image_url_https, this.map.get(UserFactory.field_profile_image_url_https));
-        m.put(UserFactory.field_appearance_first, utcFormatter.print(getAppearanceFirst().getTime()));
-        m.put(UserFactory.field_appearance_latest, utcFormatter.print(getAppearanceLatest().getTime()));
-        if (this.map.containsKey(UserFactory.field_profile_image)) m.put(UserFactory.field_profile_image, this.map.get(UserFactory.field_profile_image));
-        return m;
     }
 
     public JSONObject toJSON() throws JSONException {

@@ -76,35 +76,6 @@ public class Timeline implements Iterable<MessageEntry> {
         }
     }
 
-    public Timeline reduceToMaxsize(final int maxsize) {
-        List<MessageEntry> m = new ArrayList<>();
-        Timeline t = new Timeline(this.order);
-        if (maxsize < 0) return t;
-
-        // remove tweets from this timeline
-        synchronized (tweets) {
-            while (this.tweets.size() > maxsize) m.add(this.tweets.remove(this.tweets.keySet().iterator().next()));
-        }
-
-        // create new timeline
-        for (MessageEntry me: m) {
-            t.addUser(this.users.get(me.getScreenName()));
-            t.addTweet(me);
-        }
-
-        // prune away users not needed any more in this structure
-        Set<String> screen_names = new HashSet<>();
-        for (MessageEntry me: this.tweets.values()) screen_names.add(me.getScreenName());
-        synchronized (this.users) {
-            Iterator<Map.Entry<String, UserEntry>> i = this.users.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry<String, UserEntry> e = i.next();
-                if (!screen_names.contains(e.getValue().getScreenName())) i.remove();
-            }
-        }
-        return t;
-    }
-
     public void setScraperInfo(String info) {
         this.scraperInfo = info;
     }

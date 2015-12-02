@@ -23,6 +23,9 @@ package org.loklak.android.data;
 
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.Date;
@@ -88,8 +91,28 @@ public class AbstractIndexEntry {
             for (String s: (LinkedHashSet<String>) l) if (s != null) a.add(s);
             return a;
         }
+        if (l instanceof JSONArray) {
+            LinkedHashSet<String> a = new LinkedHashSet<String>();
+            JSONArray la = (JSONArray) l;
+            for (int i = 0; i < la.length(); i++) {
+                try {
+                    String s = la.getString(i);
+                    if (s != null) a.add(s);
+                } catch (JSONException e) {}
+            }
+            return a;
+        }
         LinkedHashSet<String> a = new LinkedHashSet<String>();
         for (Object s: ((Collection<?>) l)) if (s != null) a.add((String) s);
         return a;
+    }
+
+    public Object lazyGet(JSONObject json, String key) {
+        try {
+            Object o = json.get(key);
+            return o;
+        } catch (JSONException e) {
+            return null;
+        }
     }
 }
