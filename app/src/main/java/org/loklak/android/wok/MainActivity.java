@@ -28,12 +28,15 @@ import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static PFont font = null;
     public static final int FRAME_RATE = 12;
     private final static Random random = new Random(System.currentTimeMillis());
-    private static Context context;
+    public static Context context; // replace with getBaseContext() ?
 
     public static StatusLine statusLine;
 
@@ -67,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = new Sketch();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
         context = this.getApplicationContext();
+
+        // debug code to clear all preferences
+        //Preferences.clear();
+
+        // create preferences
+        String apphash = Preferences.getConfig(Preferences.Key.APPHASH, "");
+        if (apphash.length() == 0) {
+            apphash = "LW_" + Integer.toHexString(Math.abs((Build.FINGERPRINT == null ? ("A404" + System.currentTimeMillis()) : Build.FINGERPRINT).hashCode()));
+            Preferences.setConfig(Preferences.Key.APPHASH, apphash);
+        }
     }
 
     public static boolean isConnectedWifi() {
@@ -102,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             PowerManager pm = (PowerManager) this.getActivity().getApplicationContext().getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "loklak");
             wl.acquire();
+            showsplash = !Preferences.getConfig(Preferences.Key.APPGRANTED, false);
             // first message
             statusLine.show("warming up loklak wok", 4000);
             buttons_disconnected = new Buttons(this);
@@ -216,7 +230,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // react on button status
                 if (buttons_splash.getButton("startapp").isActivated()) play(R.raw.blackie666__alienbleep);
-                if (buttons_splash.getStatus("startapp") == 255) showsplash = false;
+                if (buttons_splash.getStatus("startapp") == 255) {
+                    showsplash = false;
+                    Preferences.setConfig(Preferences.Key.APPGRANTED, true);
+                }
 
                 randomX = 0;
 

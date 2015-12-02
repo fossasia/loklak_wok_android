@@ -55,7 +55,6 @@ public class Harvester {
     private final static int FETCH_RANDOM = 3;
     public final static String backend = "http://loklak.org";
     //public final static String backend = "http://10.0.2.2:9001";
-    private final static String apphash = Build.FINGERPRINT == null ? "A404" : "LW_" + Integer.toHexString(Math.abs(Build.FINGERPRINT.hashCode()));
 
     private final static LinkedHashSet<String> pendingQueries = new LinkedHashSet<>();
     private final static ArrayList<String> pendingContext = new ArrayList<>();
@@ -214,6 +213,7 @@ public class Harvester {
             */
             isPushing = true;
             Timeline tl = params[0];
+            String apphash = Preferences.getConfig(Preferences.Key.APPHASH, "");
             tl.setPeerId(apphash);
             boolean success = false;
             try {
