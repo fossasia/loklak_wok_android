@@ -222,7 +222,7 @@ public class Harvester {
                         long start = System.currentTimeMillis();
                         JSONObject json = PushClient.push(backend, tl);
                         if (json != null) {
-                            Log.i("PushThread", "pushed  " + tl.size() + " messages to backend in " + (System.currentTimeMillis() - start) + " ms; pendingQueries = " + pendingQueries.size() + ", pendingContext = " + pendingContext.size() + ", harvestedContext = " + harvestedContext.size());
+                            Log.i("PushThread", "pushed  " + tl.size() + " messages to backend in " + (System.currentTimeMillis() - start) + " ms; pendingQueries = " + pendingQueries.size() + ", pendingContext = " + pendingContext.size() + ", harvestedContext = " + harvestedContext.size() + ", attempt = " + i);
 
                             // The client tells us how many messages we have pushed already!
                             Object contribution_message_count_obj = json.get("contribution_message_count");
