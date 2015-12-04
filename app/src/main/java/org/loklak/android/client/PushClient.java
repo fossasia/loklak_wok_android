@@ -37,9 +37,6 @@ public class PushClient {
      */
     public static JSONObject push(String hoststub, Timeline timeline) {
         // transmit the timeline
-        assert timeline.size() != 0;
-        if (timeline.size() == 0) return null;
-
         try {
             if (hoststub.endsWith("/")) hoststub = hoststub.substring(0, hoststub.length() - 1);
             JSONObject json = JsonIO.pushJson(hoststub + "/api/push.json", "data", timeline.toJSON(false));
