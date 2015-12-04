@@ -17,10 +17,6 @@
  *  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * This is a boilerplate which can be used to easily start an android app
- * using processing (from processing.org) and json network operations.
- */
 
 package org.loklak.android.wok;
 
@@ -28,6 +24,7 @@ import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -57,18 +54,20 @@ public class MainActivity extends AppCompatActivity {
     public static final int FRAME_RATE = 12;
     private final static Random random = new Random(System.currentTimeMillis());
     public static Context context; // replace with getBaseContext() ?
-
     public static StatusLine statusLine;
-
+    public static Sketch sketch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = new Sketch();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        sketch = new Sketch();
+        fragmentManager.beginTransaction().replace(R.id.container, sketch).commit();
         context = this.getApplicationContext();
 
         // debug code to clear all preferences
@@ -80,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
             apphash = "LW_" + Integer.toHexString(Math.abs((Build.FINGERPRINT == null ? ("A404" + System.currentTimeMillis()) : Build.FINGERPRINT).hashCode()));
             Preferences.setConfig(Preferences.Key.APPHASH, apphash);
         }
+
+        // start background task
+        startService(new Intent(MainActivity.this, HarvestService.class));
     }
 
     public static boolean isConnectedWifi() {
@@ -193,20 +195,28 @@ public class MainActivity extends AppCompatActivity {
             strokeWeight(1);
             int cw = Math.min(70, width / 10);
             int xo = (width - 10 * cw) / 2;
-            int yo = 20;
+            int vpos = 20;
             float dd = 0.1f * cw / 70;
             for (int w = 0; w < 3; w++) {
-                GraphicData.loklakShape.draw(this, "l", xo + 0 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "o", xo + 1 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 2 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "l", xo + 3 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "a", xo + 4 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 5 * cw + w, yo, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "l", xo + 0 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "o", xo + 1 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "k", xo + 2 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "l", xo + 3 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "a", xo + 4 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "k", xo + 5 * cw + w, vpos, dd, randomX, randomY);
 
-                GraphicData.loklakShape.draw(this, "w", xo + 7 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "o", xo + 8 * cw + w, yo, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 9 * cw + w, yo, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "w", xo + 7 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "o", xo + 8 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "k", xo + 9 * cw + w, vpos, dd, randomX, randomY);
             }
+            vpos += 100;
+
+            // draw status line
+            fill(255, 200, 41);
+            textFont(font, fontsize);
+            statusLine.setY(vpos);
+            statusLine.draw();
+
 
             if (showsplash) {
 
@@ -263,12 +273,6 @@ public class MainActivity extends AppCompatActivity {
                 textFont(font, fontsize);
                 text("waiting for authorisation to harvest anyway", width / 2, y + 2 * fontsize);
 
-                // draw status line
-                fill(255, 200, 41);
-                textFont(font, fontsize);
-                statusLine.setY(yo + 100);
-                statusLine.draw();
-
                 // draw the buttons (always at last to make them visible at all cost)
                 buttons_disconnected.draw();
 
@@ -322,29 +326,23 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                // draw status line
-                fill(255, 200, 41);
-                textFont(font, fontsize);
-                statusLine.setY(yo + 100);
-                statusLine.draw();
-
                 // draw messages
                 textFont(font, fontsize);
                 textAlign(LEFT, TOP);
                 int d = 0;
-                int my = yo + 100 + 2 * fontsize;
+                vpos += 2 * fontsize;
                 for (MessageEntry me : Harvester.displayMessages) {
-                    if (my > height) break;
+                    if (vpos > height) break;
 
                     fill(255, 200, 41);
                     //fill(COLOR_ACCENT);
-                    text(me.getCreatedAt().toString() + " from @" + me.getScreenName(), 5, my);
-                    my += fontsize;
+                    text(me.getCreatedAt().toString() + " from @" + me.getScreenName(), 5, vpos);
+                    vpos += fontsize;
 
                     //fill(COLOR_MAIN);
                     fill(32, 180, 230);
-                    text(me.getText(10000, ""), 5, my);
-                    my += fontsize;
+                    text(me.getText(10000, ""), 5, vpos);
+                    vpos += fontsize;
                     d++;
                 }
                 if (d < Harvester.displayMessages.size()) Harvester.reduceDisplayMessages();
