@@ -31,27 +31,43 @@ public class Shapes extends HashMap<String, Shapes.Line> {
 
     private final static Random random = new Random(System.currentTimeMillis());
 
-    int minx = 0, miny = 0, maxx = 0, maxy = 0;
+    int maxx = 0, maxy = 0;
 
     public Shapes() {
     }
 
-    public void normalize() {
-        this.minx = Integer.MAX_VALUE;
-        this.miny = Integer.MAX_VALUE;
+    /**
+     * The transform method determines the maximum width and height of the shape.
+     * It then re-calculates all points in such a way that the minimum position is
+     * 0,0 and the maximum position is maxx, maxy where maxx == width
+     * @param width the maximum x position of the transformed shape
+     */
+    public void transform(int width) {
+        // find minimum/maximum point coordinates
+        int minx = Integer.MAX_VALUE;
+        int miny = Integer.MAX_VALUE;
         this.maxx = Integer.MIN_VALUE;
         this.maxy = Integer.MIN_VALUE;
         for (Line s : this.values()) {
-            this.minx = Math.min(this.minx, s.minx());
-            this.miny = Math.min(this.miny, s.miny());
+            minx = Math.min(minx, s.minx());
+            miny = Math.min(miny, s.miny());
             this.maxx = Math.max(this.maxx, s.maxx());
             this.maxy = Math.max(this.maxy, s.maxy());
         }
+        // calculate normalization factor
+        float size = ((float) width) / ((float) (this.maxx - minx));
+        // transform all points into the new positions
+        for (Line s: this.values()) {
+            s.transform(minx, miny, size);
+        }
+        // store the resulting dimension of the shape
+        this.maxx = width;
+        this.maxy = (int) (size * (this.maxy - miny));
     }
 
-    public void draw(PApplet sketch, String name, int x, int y, float size, int randomX, int randomY) {
+    public void draw(PApplet sketch, String name, int x, int y, int randomX, int randomY) {
         Line s = this.get(name);
-        s.draw(sketch, this.minx, this.miny, x, y, size, randomX, randomY);
+        s.draw(sketch, x, y, randomX, randomY);
     }
 
     public static class Line {
@@ -65,8 +81,20 @@ public class Shapes extends HashMap<String, Shapes.Line> {
             this.outer = outer;
         }
 
-        private int min(int o, int[] p) {int m = Integer.MAX_VALUE; for (int i = 0; i < p.length; i += 2) m = Math.min(m, p[i]); return m;}
-        private int max(int o, int[] p) {int m = Integer.MIN_VALUE; for (int i = 0; i < p.length; i += 2) m = Math.max(m, p[i]); return m;}
+        public void transform(int offx, int offy, float size) {
+            transform(offx, offy, size, this.outer);
+            if (this.inner != null) transform(offx, offy, size, this.inner);
+        }
+
+        private static void transform(int offx, int offy, float size, int[] p) {
+            for (int i = 0; i < p.length; i += 2) {
+                p[i] = (int) (size * (p[i] - offx));
+                p[i + 1] = (int) (size * (p[i + 1] - offy));
+            }
+        }
+
+        private int min(int o, int[] p) {int m = Integer.MAX_VALUE; for (int i = o; i < p.length; i += 2) m = Math.min(m, p[i]); return m;}
+        private int max(int o, int[] p) {int m = Integer.MIN_VALUE; for (int i = o; i < p.length; i += 2) m = Math.max(m, p[i]); return m;}
         private int min(int o) {return Math.min(min(o, this.outer), this.inner == null ? Integer.MAX_VALUE : min(o, this.inner));}
         private int max(int o) {return Math.max(max(o, this.outer), this.inner == null ? Integer.MIN_VALUE : max(o, this.inner));}
 
@@ -75,17 +103,17 @@ public class Shapes extends HashMap<String, Shapes.Line> {
         public int minx() {return min(0);}
         public int miny() {return min(1);}
 
-        public void draw(PApplet pa, int offx, int offy, int x, int y, float size, int randomX, int randomY) {
-            draw(pa, offx, offy, x, y, size, this.outer, randomX, randomY);
-            if (this.inner != null) draw(pa, offx, offy, x, y, size, this.inner, randomX, randomY);
+        public void draw(PApplet pa, int x, int y, int randomX, int randomY) {
+            draw(pa, x, y, this.outer, randomX, randomY);
+            if (this.inner != null) draw(pa, x, y, this.inner, randomX, randomY);
         }
 
-        private void draw(PApplet pa, int offx, int offy, int x, int y, float size, int[] p, int randomX, int randomY) {
+        private static void draw(PApplet pa, int x, int y, int[] p, int randomX, int randomY) {
             int x0 = -1, y0 = -1;
             int xn = -1, yn = -1;
             for (int i = 0; i < p.length; i += 2) {
-                int xp = x + (int) (size * (p[i] - offx));
-                int yp = y + (int) (size * (p[i + 1] - offy));
+                int xp = x + p[i];
+                int yp = y + p[i + 1];
                 if (randomX > 0) { xp += random.nextInt(randomX) - randomX / 2;}
                 if (randomY > 0) { yp += random.nextInt(randomY) - randomY / 2;}
                 if (i == 0) {

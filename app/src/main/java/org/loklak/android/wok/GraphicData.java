@@ -21,9 +21,6 @@ package org.loklak.android.wok;
 
 import android.annotation.TargetApi;
 
-/**
- * Created by admin on 29.11.15.
- */
 @TargetApi(11)
 public class GraphicData {
 
@@ -60,12 +57,11 @@ public class GraphicData {
         loklakShape.put("k", shape_k);
         loklakShape.put("a", shape_a);
         loklakShape.put("w", shape_w);
-        loklakShape.normalize();
         wifiShape = new Shapes();
         wifiShape.put("shape_wifi3", shape_wifi3);
         wifiShape.put("shape_wifi2", shape_wifi2);
         wifiShape.put("shape_wifi1", shape_wifi1);
         wifiShape.put("shape_wifi0", shape_wifi0);
-        wifiShape.normalize();
     }
+
 }

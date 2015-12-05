@@ -154,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
             Buttons.Button startapp = (Buttons.Button) unlock1.clone();
             startapp.setCenter(width / 2, 5 * height / 6).setOffText("PUSH", "TO", "START").setOnText("", "", "");
             buttons_splash.addButton("startapp", startapp);
+
+            GraphicData.loklakShape.transform(Math.min(width, height) / 12);
+            GraphicData.wifiShape.transform(Math.min(width, height) * 3 / 5);
         }
 
         @Override
@@ -193,21 +196,20 @@ public class MainActivity extends AppCompatActivity {
             // draw a headline
             stroke(32, 180, 230);
             strokeWeight(1);
-            int cw = Math.min(70, width / 10);
-            int xo = (width - 10 * cw) / 2;
+            int xo = (width - 10 * GraphicData.loklakShape.maxx) / 2;
+            int cw = GraphicData.loklakShape.maxx;
             int vpos = 20;
-            float dd = 0.1f * cw / 70;
             for (int w = 0; w < 3; w++) {
-                GraphicData.loklakShape.draw(this, "l", xo + 0 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "o", xo + 1 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 2 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "l", xo + 3 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "a", xo + 4 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 5 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "l", xo + 0 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "o", xo + 1 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "k", xo + 2 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "l", xo + 3 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "a", xo + 4 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "k", xo + 5 * cw + w, vpos, randomX, randomY);
 
-                GraphicData.loklakShape.draw(this, "w", xo + 7 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "o", xo + 8 * cw + w, vpos, dd, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 9 * cw + w, vpos, dd, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "w", xo + 7 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "o", xo + 8 * cw + w, vpos, randomX, randomY);
+                GraphicData.loklakShape.draw(this, "k", xo + 9 * cw + w, vpos, randomX, randomY);
             }
             vpos += 100;
 
@@ -216,8 +218,9 @@ public class MainActivity extends AppCompatActivity {
             textFont(font, fontsize);
             statusLine.setY(vpos);
             statusLine.draw();
+            vpos += 2 * fontsize;
 
-
+            // draw the screen content below the status line according to app situation
             if (showsplash) {
 
                 // ==== SHOW GREETING AND ASK FOR PERMISSION TO HARVETS DATA FOR loklak.org ====
@@ -257,21 +260,22 @@ public class MainActivity extends AppCompatActivity {
 
                 stroke(32, 180, 230);
                 strokeWeight(1);
-                int border = Math.min(width, height) / 4;
-                float shapesize = ((float) (border * 2.0f) / (float) (GraphicData.shape_wifi3.maxx() - GraphicData.shape_wifi3.minx()));
+                int border = (width - GraphicData.wifiShape.maxx) / 2;
+                vpos += fontsize;
                 for (int w = 0; w < 5; w++) {
-                    GraphicData.wifiShape.draw(this, "shape_wifi3", border, height / 3, shapesize, 50, 20);
-                    GraphicData.wifiShape.draw(this, "shape_wifi2", border, height / 3, shapesize, 50, 20);
-                    GraphicData.wifiShape.draw(this, "shape_wifi1", border, height / 3, shapesize, 50, 20);
-                    GraphicData.wifiShape.draw(this, "shape_wifi0", border, height / 3, shapesize, 50, 20);
+                    GraphicData.wifiShape.draw(this, "shape_wifi3", border, vpos, 50, 20);
+                    GraphicData.wifiShape.draw(this, "shape_wifi2", border, vpos, 50, 20);
+                    GraphicData.wifiShape.draw(this, "shape_wifi1", border, vpos, 50, 20);
+                    GraphicData.wifiShape.draw(this, "shape_wifi0", border, vpos, 50, 20);
                 }
                 textFont(font, fontsize * 2);
                 textAlign(CENTER, CENTER);
                 fill(32, 180, 230);
-                int y = (int) (height / 3 + (GraphicData.shape_wifi0.maxy() - GraphicData.shape_wifi3.miny()) * shapesize + fontsize);
-                text("MISSING WIFI", width / 2, y);
+                vpos += GraphicData.wifiShape.maxy + 2 * fontsize;
+                text("MISSING WIFI", width / 2, vpos);
                 textFont(font, fontsize);
-                text("waiting for authorisation to harvest anyway", width / 2, y + 2 * fontsize);
+                vpos += 2 * fontsize;
+                text("waiting for authorisation to harvest anyway", width / 2, vpos);
 
                 // draw the buttons (always at last to make them visible at all cost)
                 buttons_disconnected.draw();
@@ -330,7 +334,6 @@ public class MainActivity extends AppCompatActivity {
                 textFont(font, fontsize);
                 textAlign(LEFT, TOP);
                 int d = 0;
-                vpos += 2 * fontsize;
                 for (MessageEntry me : Harvester.displayMessages) {
                     if (vpos > height) break;
 
