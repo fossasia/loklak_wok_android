@@ -55,12 +55,15 @@ public class SearchClient {
                     tl.add(t, u);
                 }
             }
-            JSONObject metadata = json.getJSONObject("search_metadata");
-            if (metadata != null) {
-                Integer hits = (Integer) metadata.get("hits");
-                if (hits != null) tl.setHits(hits.intValue());
-                String scraperInfo = (String) metadata.get("scraperInfo");
-                if (scraperInfo != null) tl.setScraperInfo(scraperInfo);
+            if (json.has("search_metadata")) {
+                JSONObject metadata = json.getJSONObject("search_metadata");
+                if (metadata.has("hits")) {
+                    tl.setHits((Integer) metadata.get("hits"));
+                }
+                if (metadata.has("scraperInfo")) {
+                    String scraperInfo = (String) metadata.get("scraperInfo");
+                    tl.setScraperInfo(scraperInfo);
+                }
             }
         } catch (Throwable e) {
             Log.e("SeachClient", e.getMessage(), e);

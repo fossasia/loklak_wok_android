@@ -21,11 +21,9 @@
 package org.loklak.android.wok;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -33,7 +31,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         boolean showsplash = true;
         boolean wasWifiConnected = true;
         boolean acceptNonWifiConnection = false;
-        Buttons buttons_disconnected, buttons_harvesting, buttons_splash;
+        Buttons buttons_missingwifi, buttons_harvesting, buttons_splash;
 
         @Override
         public void settings() {
@@ -120,43 +117,48 @@ public class MainActivity extends AppCompatActivity {
             showsplash = !Preferences.getConfig(Preferences.Key.APPGRANTED, false);
             // first message
             statusLine.show("warming up loklak wok", 4000);
-            buttons_disconnected = new Buttons(this);
-            buttons_harvesting = new Buttons(this);
+
+            // buttons for the splash screen
             buttons_splash = new Buttons(this);
-            Buttons.Button unlock0 = buttons_disconnected.createButton();
-            unlock0
-                    .setCenter(width / 4, 5 * height / 6)
+            Buttons.Button button_splash_startapp = buttons_splash.createButton();
+            button_splash_startapp
+                    .setCenter(width / 2, 5 * height / 6)
                     .setWidth(fontsize * 9)
                     .setFontsize(fontsize * 3 / 2)
-                    .setOffText("PRESS", "TO", "UNLOCK")
-                    .setOnText("", "UNLOCKED", "")
+                    .setOffText("PUSH", "TO", "START")
+                    .setOnText("", "", "")
                     .setBorderWidth(8)
                     .setBorderColor(32, 180, 230)
                     .setOnColor(16, 90, 115)
                     .setOffColor(0, 0, 0)
                     .setTextColor(255, 200, 41)
                     .setTransitionTime(300)
-                    .setStatus(0);;
-            Buttons.Button unlock1 = (Buttons.Button) unlock0.clone();
-            unlock1.setCenter(width / 2, 5 * height / 6).setStatus(0);
-            Buttons.Button unlock2 = (Buttons.Button) unlock0.clone();
-            unlock2.setCenter(3 * width / 4, 5 * height / 6).setStatus(0);
-            buttons_disconnected.addButton("unlock0", unlock0);
-            buttons_disconnected.addButton("unlock1", unlock1);
-            buttons_disconnected.addButton("unlock2", unlock2);
-            Buttons.Button terminate = (Buttons.Button) unlock0.clone();
-            terminate.setCenter(fontsize, fontsize).setFontsize(fontsize).setWidth(fontsize).setBorderWidth(3).setOffText("", "X", "").setOnText("", "", "").setTextColor(32, 180, 230);
-            buttons_harvesting.addButton("terminate", terminate);
-            Buttons.Button offline = (Buttons.Button) unlock0.clone();
-            offline.setCenter(width - fontsize, fontsize).setFontsize(fontsize).setWidth(fontsize).setBorderWidth(3).setOffText("", "O", "").setOnText("", "", "").setTextColor(32, 180, 230).invisible();
-            buttons_harvesting.addButton("offline", offline);
+                    .setStatus(0);
+            buttons_splash.addButton("startapp", button_splash_startapp);
 
-            Buttons.Button startapp = (Buttons.Button) unlock1.clone();
-            startapp.setCenter(width / 2, 5 * height / 6).setOffText("PUSH", "TO", "START").setOnText("", "", "");
-            buttons_splash.addButton("startapp", startapp);
+            // buttons for the missing-wifi screen
+            buttons_missingwifi = new Buttons(this);
+            Buttons.Button button_missingwifi_unlock0 = (Buttons.Button) button_splash_startapp.clone();
+            button_missingwifi_unlock0.setCenter(width / 4, 5 * height / 6).setOffText("PRESS", "TO", "UNLOCK").setOnText("", "UNLOCKED", "");
+            Buttons.Button button_missingwifi_unlock1 = (Buttons.Button) button_missingwifi_unlock0.clone();
+            button_missingwifi_unlock1.setCenter(width / 2, 5 * height / 6).setStatus(0);
+            Buttons.Button button_missingwifi_unlock2 = (Buttons.Button) button_missingwifi_unlock0.clone();
+            button_missingwifi_unlock2.setCenter(3 * width / 4, 5 * height / 6).setStatus(0);
+            buttons_missingwifi.addButton("unlock0", button_missingwifi_unlock0);
+            buttons_missingwifi.addButton("unlock1", button_missingwifi_unlock1);
+            buttons_missingwifi.addButton("unlock2", button_missingwifi_unlock2);
 
-            GraphicData.loklakShape.transform(Math.min(width, height) / 12);
-            GraphicData.wifiShape.transform(Math.min(width, height) * 3 / 5);
+            // buttons for the harvesting screen
+            buttons_harvesting = new Buttons(this);
+            Buttons.Button button_harvesting_terminate = (Buttons.Button) button_missingwifi_unlock0.clone();
+            button_harvesting_terminate.setCenter(fontsize, fontsize).setFontsize(fontsize).setWidth(fontsize).setBorderWidth(3).setOffText("", "X", "").setOnText("", "", "").setTextColor(32, 180, 230);
+            //buttons_harvesting.addButton("terminate", terminate);
+            Buttons.Button button_harvesting_switchtomissingwifi = (Buttons.Button) button_missingwifi_unlock0.clone();
+            button_harvesting_switchtomissingwifi.setCenter(width - fontsize, fontsize).setFontsize(fontsize).setWidth(fontsize).setBorderWidth(3).setOffText("", "O", "").setOnText("", "", "").setTextColor(32, 180, 230).invisible();
+            //buttons_harvesting.addButton("offline", offline);
+
+            // pre-calculation of shape data
+            GraphicData.init(width, height, fontsize);
         }
 
         @Override
@@ -196,22 +198,8 @@ public class MainActivity extends AppCompatActivity {
             // draw a headline
             stroke(32, 180, 230);
             strokeWeight(1);
-            int xo = (width - 10 * GraphicData.loklakShape.maxx) / 2;
-            int cw = GraphicData.loklakShape.maxx;
-            int vpos = 20;
-            for (int w = 0; w < 3; w++) {
-                GraphicData.loklakShape.draw(this, "l", xo + 0 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "o", xo + 1 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 2 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "l", xo + 3 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "a", xo + 4 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 5 * cw + w, vpos, randomX, randomY);
-
-                GraphicData.loklakShape.draw(this, "w", xo + 7 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "o", xo + 8 * cw + w, vpos, randomX, randomY);
-                GraphicData.loklakShape.draw(this, "k", xo + 9 * cw + w, vpos, randomX, randomY);
-            }
-            vpos += 100;
+            GraphicData.headline_outline.draw(this, 0, 2, randomX, randomY);
+            int vpos = GraphicData.headline_outline.getMaxY() + fontsize;
 
             // draw status line
             fill(255, 200, 41);
@@ -228,10 +216,12 @@ public class MainActivity extends AppCompatActivity {
                     statusLine.show("Welcome to the loklak.org data harvesting app", 3000);
                 }
 
+                GraphicData.cow_outline.draw(this, 0, 2, 0, 0);
+
                 textFont(font, fontsize * 2);
                 textAlign(CENTER, CENTER);
                 fill(32, 180, 230);
-                int y = (int) (height / 2);
+                int y = GraphicData.cow_outline.getMaxY() + 2 * fontsize;
                 text("AGREEMENT", width / 2, y); y += 2 * fontsize;
                 textFont(font, fontsize);
                 text("This app harvests tweets from twitter", width / 2, y); y += fontsize;
@@ -255,36 +245,35 @@ public class MainActivity extends AppCompatActivity {
                 // ==== SHOW MESSAGE THAT WE DON'T HAVE WIFI; ASK FOR PERMISSION TO HARVEST ANYWAY ====
                 if (statusLine.getQueueSize() == 0) {
                     statusLine.show("Harvesting for non-wifi connections disabled", 3000);
+                    statusLine.show("Harvesting will resume automatically if re-connected to WIFI", 3000);
                     statusLine.show("Unlock all three buttons to harvest anyway", 3000);
                 }
 
                 stroke(32, 180, 230);
                 strokeWeight(1);
                 int border = (width - GraphicData.wifiShape.maxx) / 2;
-                vpos += fontsize;
                 for (int w = 0; w < 5; w++) {
-                    GraphicData.wifiShape.draw(this, "shape_wifi3", border, vpos, 50, 20);
-                    GraphicData.wifiShape.draw(this, "shape_wifi2", border, vpos, 50, 20);
-                    GraphicData.wifiShape.draw(this, "shape_wifi1", border, vpos, 50, 20);
-                    GraphicData.wifiShape.draw(this, "shape_wifi0", border, vpos, 50, 20);
+                    GraphicData.wifi_outline.draw(this, 0, 1, 50, 20);
                 }
                 textFont(font, fontsize * 2);
                 textAlign(CENTER, CENTER);
                 fill(32, 180, 230);
-                vpos += GraphicData.wifiShape.maxy + 2 * fontsize;
+                vpos = GraphicData.wifi_outline.getMaxY() + 2 * fontsize;
                 text("MISSING WIFI", width / 2, vpos);
                 textFont(font, fontsize);
                 vpos += 2 * fontsize;
+                text("harvesting will resume automatically if re-connected to WIFI", width / 2, vpos);
+                vpos += fontsize;
                 text("waiting for authorisation to harvest anyway", width / 2, vpos);
 
                 // draw the buttons (always at last to make them visible at all cost)
-                buttons_disconnected.draw();
+                buttons_missingwifi.draw();
 
                 // react on button status
-                int unlocksum = buttons_disconnected.getStatus("unlock0") + buttons_disconnected.getStatus("unlock1") + buttons_disconnected.getStatus("unlock2");
-                if (buttons_disconnected.getButton("unlock0").isActivated()) play(R.raw.blackie666__alienbleep);
-                if (buttons_disconnected.getButton("unlock1").isActivated()) play(R.raw.blackie666__alienbleep);
-                if (buttons_disconnected.getButton("unlock2").isActivated()) play(R.raw.blackie666__alienbleep);
+                int unlocksum = buttons_missingwifi.getStatus("unlock0") + buttons_missingwifi.getStatus("unlock1") + buttons_missingwifi.getStatus("unlock2");
+                if (buttons_missingwifi.getButton("unlock0").isActivated()) play(R.raw.blackie666__alienbleep);
+                if (buttons_missingwifi.getButton("unlock1").isActivated()) play(R.raw.blackie666__alienbleep);
+                if (buttons_missingwifi.getButton("unlock2").isActivated()) play(R.raw.blackie666__alienbleep);
                 if (unlocksum == 255 && statusLine.getQueueSize() == 0) {
                     statusLine.clear();
                     statusLine.show("Unlock TWO MORE buttons to start harvesting", 3000);
@@ -296,10 +285,10 @@ public class MainActivity extends AppCompatActivity {
                 if (unlocksum == 255 * 3) {
                     statusLine.clear();
                     acceptNonWifiConnection = true;
-                    buttons_disconnected.getButton("unlock0").setStatus(0,0);
-                    buttons_disconnected.getButton("unlock1").setStatus(0,0);
-                    buttons_disconnected.getButton("unlock2").setStatus(0,0);
-                    buttons_harvesting.getButton("offline").visible();
+                    buttons_missingwifi.getButton("unlock0").setStatus(0,0);
+                    buttons_missingwifi.getButton("unlock1").setStatus(0,0);
+                    buttons_missingwifi.getButton("unlock2").setStatus(0,0);
+                    //buttons_harvesting.getButton("offline").visible();
                 }
 
                 randomX = 0;
@@ -312,13 +301,16 @@ public class MainActivity extends AppCompatActivity {
                 if (statusLine.getQueueSize() == 0) {
                     switch (random.nextInt(5)) {
                         case 0:
-                            statusLine.show("Pending Back-End Queries: " + Harvester.hitsOnBackend, 1000);
+                            if (Harvester.hitsOnBackend != 1000)
+                                statusLine.show("Pending Back-End Queries: " + Harvester.hitsOnBackend, 1000);
                             break;
                         case 1:
-                            statusLine.show("Pending Messages for Storage: " + Harvester.pushToBackendAccumulationTimeline.size(), 1000);
+                            if (Harvester.pushToBackendAccumulationTimeline.size() != 0)
+                                statusLine.show("Pending Messages for Storage: " + Harvester.pushToBackendAccumulationTimeline.size(), 1000);
                             break;
                         case 2:
-                            statusLine.show("Pending Lines: " + Harvester.displayMessages.size(), 1000);
+                            if (Harvester.displayMessages.size() != 0)
+                                statusLine.show("Pending Lines: " + Harvester.displayMessages.size(), 1000);
                             break;
                         case 3:
                             statusLine.show("http://loklak.org", 2000);
@@ -360,16 +352,18 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
 
+
                 // draw the buttons (always at last to make them visible at all cost)
                 buttons_harvesting.draw();
 
                 // react on button status
+                /*
                 if (buttons_harvesting.getStatus("offline") == 255) {
                     acceptNonWifiConnection = false;
                     buttons_harvesting.getButton("offline").setStatus(0,0);
                 }
                 if (buttons_harvesting.getStatus("terminate") == 255) this.exit();
-
+                */
             }
 
             //Log.d("Main", "draw time: " + (System.currentTimeMillis() - start) + "ms");
@@ -380,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
             if (showsplash) {
                 buttons_splash.mousePressed(mouseX, mouseY);
             } else {
-                buttons_disconnected.mousePressed(mouseX, mouseY);
+                buttons_missingwifi.mousePressed(mouseX, mouseY);
                 buttons_harvesting.mousePressed(mouseX, mouseY);
             }
         }

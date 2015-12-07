@@ -127,7 +127,7 @@ public class Harvester {
         @Override
         protected Void doInBackground(Void... params) {
             isLoading = true;
-            if (random.nextInt(20) != 0 && hitsOnBackend < HITS_LIMIT_4_QUERIES && pendingQueries.size() == 0 && pendingContext.size() > 0) {
+            if (random.nextInt(100) != 0 && hitsOnBackend < HITS_LIMIT_4_QUERIES && pendingQueries.size() == 0 && pendingContext.size() > 0) {
                 // harvest using the collected keys instead using the queries
                 int r = random.nextInt((pendingContext.size() / 2) + 1);
                 String q = pendingContext.remove(r);
@@ -154,11 +154,25 @@ public class Harvester {
             if (pendingQueries.size() == 0) {
                 MainActivity.statusLine.show("Loading Suggestions", 2000);
                 ResultList<QueryEntry> rl = SuggestClient.suggest(backend, "", "query", Math.max(FETCH_RANDOM * 30, hitsOnBackend / 10), "asc", "retrieval_next", 0, null, "now", "retrieval_next", FETCH_RANDOM);
-                for (QueryEntry qe: rl) {
+                for (QueryEntry qe : rl) {
                     MainActivity.statusLine.show("Got Query '" + qe.getQuery() + "'", 2000);
                     pendingQueries.add(qe.getQuery());
                 }
                 hitsOnBackend = (int) rl.getHits();
+                if (rl.size() == 0) {
+                    // the backend does not have any new query words for this time.
+                    if (pendingContext.size() == 0) {
+                        // try to fill the pendingContext using a matchall-query from the cache
+                        // http://loklak.org/api/search.json?source=cache&q=
+                        try {
+                            Timeline tl = SearchClient.search(backend, "", Timeline.Order.CREATED_AT, "cache", 100, 0, 60000);
+                            checkContext(tl, false);
+                        } catch (IOException e) {}
+                    }
+                    // if we still don't have any context, we are a bit helpless and hope that this situation
+                    // will be better in the future. To prevent that this is called excessively fast, do a pause.
+                    if (pendingContext.size() == 0) try {Thread.sleep(10000);} catch (InterruptedException e) {}
+                }
             }
 
             if (pendingQueries.size() == 0) {
