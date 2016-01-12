@@ -321,7 +321,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+/*
+                int w = min(width, height);
+                int h = w / 2;
+                int r = h / 3 * 2;
+                float a = asin(((float) h) / 2.0f / ((float) r));
 
+
+                stroke(32, 180, 230);
+                strokeWeight(1);
+                noFill();
+                this.arc(width / 2, vpos + h / 2, r, r, a, -a);
+                this.arc(width / 2, vpos + h / 2, r, r, PI + a, PI - a);
+
+                vpos += h;
+*/
                 // draw messages
                 textFont(font, fontsize);
                 textAlign(LEFT, TOP);
