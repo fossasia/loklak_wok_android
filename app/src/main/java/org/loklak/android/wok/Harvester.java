@@ -34,6 +34,7 @@ import org.loklak.android.data.QueryEntry;
 import org.loklak.android.data.ResultList;
 import org.loklak.android.data.Timeline;
 import org.loklak.android.harvester.TwitterScraper;
+import org.loklak.android.tools.LogLines;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class Harvester {
 
     public static BlockingQueue<Timeline> pushToBackendIndividualTimeline = new LinkedBlockingQueue<Timeline>();
     public static BlockingQueue<Timeline> pushToBackendAccumulationTimeline = new LinkedBlockingQueue<Timeline>();
-    public static BlockingQueue<MessageEntry> displayMessages = new LinkedBlockingQueue<MessageEntry>();
+    public static LogLines<MessageEntry> displayMessages = new LogLines<MessageEntry>(200);
 
     public static void reduceDisplayMessages() {
         if (displayMessages.size() > 0) {
