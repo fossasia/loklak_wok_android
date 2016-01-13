@@ -22,6 +22,7 @@ package org.loklak.android.tools;
 
 import org.loklak.android.data.MessageEntry;
 
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,7 +31,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * This shall be used to avoid memory leaks when the queue may
  * get too large and information from the queue can be abandoned safely.
  */
-public class LogLines<A> {
+public class LogLines<A> implements Iterable<A> {
 
     public BlockingQueue<A> lines = new LinkedBlockingQueue<A>();
 
@@ -51,6 +52,10 @@ public class LogLines<A> {
 
     public A poll() {
         return lines.poll();
+    }
+
+    public Iterator<A> iterator() {
+        return this.lines.iterator();
     }
 
 }

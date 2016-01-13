@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 buttons_splash.draw();
 
                 // react on button status
-                if (buttons_splash.getButton("startapp").isActivated()) play(R.raw.blackie666__alienbleep);
+                //if (buttons_splash.getButton("startapp").isActivated()) play(R.raw.blackie666__alienbleep);
                 if (buttons_splash.getStatus("startapp") == 255) {
                     showsplash = false;
                     Preferences.setConfig(Preferences.Key.APPGRANTED, true);
@@ -271,9 +271,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // react on button status
                 int unlocksum = buttons_missingwifi.getStatus("unlock0") + buttons_missingwifi.getStatus("unlock1") + buttons_missingwifi.getStatus("unlock2");
-                if (buttons_missingwifi.getButton("unlock0").isActivated()) play(R.raw.blackie666__alienbleep);
-                if (buttons_missingwifi.getButton("unlock1").isActivated()) play(R.raw.blackie666__alienbleep);
-                if (buttons_missingwifi.getButton("unlock2").isActivated()) play(R.raw.blackie666__alienbleep);
+                //if (buttons_missingwifi.getButton("unlock0").isActivated()) play(R.raw.blackie666__alienbleep);
+                //if (buttons_missingwifi.getButton("unlock1").isActivated()) play(R.raw.blackie666__alienbleep);
+                //if (buttons_missingwifi.getButton("unlock2").isActivated()) play(R.raw.blackie666__alienbleep);
                 if (unlocksum == 255 && statusLine.getQueueSize() == 0) {
                     statusLine.clear();
                     statusLine.show("Unlock TWO MORE buttons to start harvesting", 3000);
