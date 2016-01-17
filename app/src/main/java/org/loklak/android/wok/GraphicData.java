@@ -170,7 +170,7 @@ public class GraphicData {
         for (Shapes.Line line: cowShape.values()) {
             cow_outline.add(line,
                     (width - cowShape.maxx) / 2,
-                    loklakShape.maxy + 3 * fontsize,
+                    loklakShape.maxy + 4 * fontsize,
                     false);
         }
     }

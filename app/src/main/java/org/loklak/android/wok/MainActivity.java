@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         int fontsize;
         int randomX = 25, randomY = 0;
+        int voff = 0; // for smooth line drawing
         boolean showsplash = true;
         boolean wasWifiConnected = true;
         boolean acceptNonWifiConnection = false;
@@ -196,13 +197,13 @@ public class MainActivity extends AppCompatActivity {
             textAlign(LEFT, TOP);
 
             // draw a headline
-            stroke(32, 180, 230);
+            color_bright_stroke();
             strokeWeight(1);
             GraphicData.headline_outline.draw(this, 0, 2, randomX, randomY);
             int vpos = GraphicData.headline_outline.getMaxY() + fontsize;
 
             // draw status line
-            fill(255, 200, 41);
+            color_bright_fill();
             textFont(font, fontsize);
             statusLine.setY(vpos);
             statusLine.draw();
@@ -220,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
 
                 textFont(font, fontsize * 2);
                 textAlign(CENTER, CENTER);
-                fill(32, 180, 230);
-                int y = GraphicData.cow_outline.getMaxY() + 2 * fontsize;
+                color_dark_fill();
+                int y = GraphicData.cow_outline.getMaxY() + 5 * fontsize;
                 text("AGREEMENT", width / 2, y); y += 2 * fontsize;
                 textFont(font, fontsize);
                 text("This app harvests tweets from twitter", width / 2, y); y += fontsize;
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                     statusLine.show("Unlock all three buttons to harvest anyway", 3000);
                 }
 
-                stroke(32, 180, 230);
+                color_bright_stroke();
                 strokeWeight(1);
                 int border = (width - GraphicData.wifiShape.maxx) / 2;
                 for (int w = 0; w < 5; w++) {
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 textFont(font, fontsize * 2);
                 textAlign(CENTER, CENTER);
-                fill(32, 180, 230);
+                color_dark_fill();
                 vpos = GraphicData.wifi_outline.getMaxY() + 2 * fontsize;
                 text("MISSING WIFI", width / 2, vpos);
                 textFont(font, fontsize);
@@ -301,8 +302,8 @@ public class MainActivity extends AppCompatActivity {
                 if (statusLine.getQueueSize() == 0) {
                     switch (random.nextInt(5)) {
                         case 0:
-                            if (Harvester.hitsOnBackend != 1000)
-                                statusLine.show("Pending Back-End Queries: " + Harvester.hitsOnBackend, 1000);
+                            if (Harvester.suggestionsOnBackend != 1000)
+                                statusLine.show("Pending Back-End Queries: " + Harvester.suggestionsOnBackend, 1000);
                             break;
                         case 1:
                             if (Harvester.pushToBackendAccumulationTimeline.size() != 0)
@@ -321,41 +322,86 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-/*
+                // draw statistics
                 int w = min(width, height);
-                int h = w / 2;
-                int r = h / 3 * 2;
-                float a = asin(((float) h) / 2.0f / ((float) r));
+                int h = w / 4;
+                int d = h / 3 * 4;
+                int ccx = width / 2;
+                int ccy = vpos + h / 2;
 
-
-                stroke(32, 180, 230);
-                strokeWeight(1);
+                color_bright_stroke();
+                strokeWeight(4);
                 noFill();
-                this.arc(width / 2, vpos + h / 2, r, r, a, -a);
-                this.arc(width / 2, vpos + h / 2, r, r, PI + a, PI - a);
+                arc(ccx, ccy, d, d, 3 * PI / 4, 5 * PI / 4);
+                arc(ccx, ccy, d, d, 0, PI / 4);
+                arc(ccx, ccy, d, d, 7 * PI / 4, 2 * PI);
+                line(0, ccy, ccx - d / 2, ccy);
+                line(ccx + d / 2, ccy, width, ccy);
+                textAlign(CENTER, CENTER);
 
-                vpos += h;
-*/
+                textFont(font, fontsize);
+                color_dark_fill();
+                text("HARVESTED", ccx, ccy - fontsize - fontsize / 2);
+                textFont(font, fontsize * 2);
+                color_bright_fill();
+                text(Harvester.contribution_message_count == -1 ? "none" : "" + Harvester.contribution_message_count, width / 2, vpos + h / 2);
+
+                textFont(font, fontsize);
+                // above left
+                color_dark_fill();
+                text("QUERIES IN BACKEND",
+                        (ccx - d / 2) / 2, ccy - 3 * fontsize);
+                color_bright_fill();
+                text(Harvester.suggestionsOnBackend,
+                        (ccx - d / 2) / 2, ccy - 2 * fontsize);
+                // above right
+                color_dark_fill();
+                text("PENDING LINES",//"QUERIES IN LOKLAK WOK",
+                        ccx + d / 2 + (ccx - d / 2) / 2, ccy - 3 * fontsize);
+                color_bright_fill();
+                text(Harvester.displayMessages.size(), //Harvester.pendingQueries.size(),
+                        ccx + d / 2 + (ccx - d / 2) / 2, ccy - 2 * fontsize);
+                // below left
+                color_dark_fill();
+                text("CONTEXT PENDING",
+                        (ccx - d / 2) / 2, ccy + 2 * fontsize);
+                color_bright_fill();
+                text(Harvester.pendingContext.size(),
+                        (ccx - d / 2) / 2, ccy + 3 * fontsize);
+                // below right
+                color_dark_fill();
+                text("HARVESTED CONTEXT",
+                        ccx + d / 2 + (ccx - d / 2) / 2, ccy + 2 * fontsize);
+                color_bright_fill();
+                text(Harvester.harvestedContext.size(),
+                        ccx + d / 2 + (ccx - d / 2) / 2, ccy + 3 * fontsize);
+
+                vpos += h; // jump to text start
+
                 // draw messages
                 textFont(font, fontsize);
                 textAlign(LEFT, TOP);
-                int d = 0;
+                d = 0;
                 for (MessageEntry me : Harvester.displayMessages) {
-                    if (vpos > height) break;
+                    if (vpos + voff > height) break;
 
-                    fill(255, 200, 41);
-                    //fill(COLOR_ACCENT);
-                    text(me.getCreatedAt().toString() + " from @" + me.getScreenName(), 5, vpos);
+                    color_dark_fill();
+                    text(me.getCreatedAt().toString() + " from @" + me.getScreenName(), 5, vpos + voff);
                     vpos += fontsize;
 
-                    //fill(COLOR_MAIN);
-                    fill(32, 180, 230);
-                    text(me.getText(10000, ""), 5, vpos);
+                    color_bright_fill();
+                    text(me.getText(10000, ""), 5, vpos + voff);
                     vpos += fontsize;
                     d++;
                 }
-                if (d < Harvester.displayMessages.size()) Harvester.reduceDisplayMessages();
-                randomX = (randomX + Harvester.displayMessages.size() - d) / 2;
+                if (voff <= 0) {
+                    Harvester.reduceDisplayMessages();
+                    voff += fontsize * 2;
+                }
+                int ex = Harvester.displayMessages.size() - d;
+                voff -= Math.min(fontsize * 2, Math.max(1, ex > 0 ? ex / 2 : 0));
+
+                randomX = (randomX + Harvester.displayMessages.size() - d) / 3;
 
                 // at some time load data from the newtork
                 if (randomX < 20 && frameCount % FRAME_RATE == 1) {
@@ -381,6 +427,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //Log.d("Main", "draw time: " + (System.currentTimeMillis() - start) + "ms");
+        }
+
+        private void color_bright_stroke() {
+            stroke(32, 180, 230);
+        }
+        private void color_bright_fill() {
+            fill(255, 200, 41);
+        }
+        private void color_dark_fill() {
+            fill(32, 180, 230);
         }
 
         @Override
