@@ -49,7 +49,8 @@ public class Harvester {
 
     private final static Random random = new Random(System.currentTimeMillis());
 
-    private final static int MAX_PENDING = 200; // this could be much larger but we don't want to cache too many of these
+    private final static int MAX_PENDING_CONEXT_QUERIES = 200; // this could be much larger but we don't want to cache too many of these
+    private final static int MAX_PENDING_DISPLAY_LINES = 300;
     private final static int MAX_HARVESTED = 10000; // just to prevent a memory leak with possible OOM after a long time we flush that cache after a while
     private final static int HITS_LIMIT_4_QUERIES = 30;
     private final static int FETCH_RANDOM = 3;
@@ -72,17 +73,17 @@ public class Harvester {
         }
     }
     private static void checkContext(String s, boolean front) {
-        if (!front && pendingContext.size() > MAX_PENDING) return; // queue is full
+        if (!front && pendingContext.size() > MAX_PENDING_CONEXT_QUERIES) return; // queue is full
         if (!harvestedContext.contains(s) && !pendingContext.contains(s)) {
             if (front) pendingContext.add(0, s); else pendingContext.add(s);
         }
-        while (pendingContext.size() > MAX_PENDING) pendingContext.remove(pendingContext.size() - 1);
+        while (pendingContext.size() > MAX_PENDING_CONEXT_QUERIES) pendingContext.remove(pendingContext.size() - 1);
         if (harvestedContext.size() > MAX_HARVESTED) harvestedContext.clear();
     }
 
     public static BlockingQueue<Timeline> pushToBackendIndividualTimeline = new LinkedBlockingQueue<Timeline>();
     public static BlockingQueue<Timeline> pushToBackendAccumulationTimeline = new LinkedBlockingQueue<Timeline>();
-    public static LogLines<MessageEntry> displayMessages = new LogLines<MessageEntry>(200);
+    public static LogLines<MessageEntry> displayMessages = new LogLines<MessageEntry>(MAX_PENDING_DISPLAY_LINES);
 
     public static void reduceDisplayMessages() {
         if (displayMessages.size() > 0) {
@@ -137,8 +138,14 @@ public class Harvester {
                     isLoading = false;
                     return null;
                 }
+
                 // display the tweets
-                for (MessageEntry me: tl) displayMessages.add(me);
+                for (MessageEntry me: tl) {
+                    // we don't want to throttle down just because the display is too full
+                    if (displayMessages.size() >= MAX_PENDING_DISPLAY_LINES) reduceDisplayMessages();
+                    // add a line at the end of the list
+                    displayMessages.add(me);
+                }
 
                 // enqueue the tweets
                 pushToBackendAccumulationTimeline.add(tl);
@@ -193,7 +200,12 @@ public class Harvester {
             }
 
             // display the tweets
-            for (MessageEntry me: tl) displayMessages.add(me);
+            for (MessageEntry me: tl) {
+                // we don't want to throttle down just because the display is too full
+                if (displayMessages.size() >= MAX_PENDING_DISPLAY_LINES) reduceDisplayMessages();
+                // add a line at the end of the list
+                displayMessages.add(me);
+            }
 
             // find content query strings and store them in the context cache
             checkContext(tl, true);

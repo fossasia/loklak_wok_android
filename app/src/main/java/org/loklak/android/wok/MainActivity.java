@@ -404,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
                 randomX = (randomX + Harvester.displayMessages.size() - d) / 3;
 
                 // at some time load data from the newtork
-                if (randomX < 20 && frameCount % FRAME_RATE == 1) {
+                if (frameCount % FRAME_RATE == 1) {
                     this.getActivity().runOnUiThread(new Runnable() {
                         public void run() {
                             Harvester.harvest();
