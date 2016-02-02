@@ -24,15 +24,16 @@ import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.loklak.android.client.PushClient;
-import org.loklak.android.client.SearchClient;
-import org.loklak.android.client.SuggestClient;
-import org.loklak.android.data.MessageEntry;
-import org.loklak.android.data.QueryEntry;
-import org.loklak.android.data.ResultList;
-import org.loklak.android.data.Timeline;
-import org.loklak.android.harvester.TwitterScraper;
+import org.loklak.client.PushClient;
+import org.loklak.client.SearchClient;
+import org.loklak.client.SuggestClient;
+import org.loklak.objects.MessageEntry;
+import org.loklak.objects.QueryEntry;
+import org.loklak.objects.ResultList;
+import org.loklak.objects.Timeline;
+import org.loklak.harvester.TwitterScraper;
 import org.loklak.android.tools.LogLines;
 
 import java.io.IOException;
@@ -158,9 +159,9 @@ public class Harvester {
             }
 
             // load more queries if pendingQueries is empty
-            if (pendingQueries.size() == 0) {
-                MainActivity.statusLine.show("Loading Suggestions", 2000);
+            if (pendingQueries.size() == 0) try {
                 ResultList<QueryEntry> rl = SuggestClient.suggest(backend, "", "query", Math.max(FETCH_RANDOM * 30, suggestionsOnBackend / 10), "asc", "retrieval_next", 0, null, "now", "retrieval_next", FETCH_RANDOM);
+                MainActivity.statusLine.show("Loading Suggestions", 2000);
                 for (QueryEntry qe : rl) {
                     MainActivity.statusLine.show("Got Query '" + qe.getQuery() + "'", 2000);
                     pendingQueries.add(qe.getQuery());
@@ -180,6 +181,8 @@ public class Harvester {
                     // will be better in the future. To prevent that this is called excessively fast, do a pause.
                     if (pendingContext.size() == 0) try {Thread.sleep(10000);} catch (InterruptedException e) {}
                 }
+            } catch (IOException | JSONException e) {
+
             }
 
             if (pendingQueries.size() == 0) {

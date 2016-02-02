@@ -28,4 +28,5 @@ dependencies {
     compile files('libs/signpost-core.jar')
     compile files('libs/joda-time-2.8.2.jar')
     compile files('libs/joda-convert-1.2.jar')
+    compile files('libs/loklakj_lib.jar')
 }

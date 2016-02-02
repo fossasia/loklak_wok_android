@@ -35,7 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 
-import org.loklak.android.data.MessageEntry;
+import org.loklak.objects.MessageEntry;
 
 import java.util.Random;
 

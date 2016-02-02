@@ -20,7 +20,7 @@
 
 package org.loklak.android.tools;
 
-import org.loklak.android.data.MessageEntry;
+import org.loklak.objects.MessageEntry;
 
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
