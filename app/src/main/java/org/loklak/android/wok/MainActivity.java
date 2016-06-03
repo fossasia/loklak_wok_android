@@ -1,20 +1,20 @@
 /**
- *  Loklak Wok
- *  Copyright 16.11.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * Loklak Wok
+ * Copyright 16.11.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -30,6 +30,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     public static Context context; // replace with getBaseContext() ?
     public static StatusLine statusLine;
     public static Sketch sketch;
+    public static Handler handler;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +64,14 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        context = this.getApplicationContext();
+        handler = new Handler();
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getFragmentManager();
-        sketch = new Sketch();
-        fragmentManager.beginTransaction().replace(R.id.container, sketch).commit();
-        context = this.getApplicationContext();
+        if (fragmentManager.findFragmentById(R.id.container) == null) {
+            sketch = new Sketch();
+            fragmentManager.beginTransaction().replace(R.id.container, sketch).commit();
+        }
 
         // debug code to clear all preferences
         //Preferences.clear();
@@ -79,6 +85,23 @@ public class MainActivity extends AppCompatActivity {
 
         // start background task
         startService(new Intent(MainActivity.this, HarvestService.class));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // keep app awake
+        PowerManager pm = (PowerManager) MainActivity.context.getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "loklak");
+        wakeLock.acquire();
+    }
+
+    @Override
+    protected void onStop() {
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+        super.onStop();
     }
 
     public static boolean isConnectedWifi() {
@@ -101,9 +124,10 @@ public class MainActivity extends AppCompatActivity {
         public void settings() {
             fullScreen();
             size(width, height, JAVA2D);
-            for (String font: PFont.list()) Log.d("setup", "font = " + font);
+            for (String font : PFont.list()) Log.d("setup", "font = " + font);
             fontsize = Math.min(width, height) / 38; // computes to a font size of 20 for a 768 width
-            if (font == null) font = createFont("DroidSansMono.ttf", fontsize * 4, true); // at a height of 20, this font has a width of 12
+            if (font == null)
+                font = createFont("DroidSansMono.ttf", fontsize * 4, true); // at a height of 20, this font has a width of 12
             // with this settings, we have exactly space for 64 characters on a horizontal-oriented phone
             statusLine = new StatusLine(this, fontsize * 3 / 2, 32, 180, 230);
         }
@@ -111,10 +135,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void setup() {
             frameRate(FRAME_RATE);
-            // keep app awake
-            PowerManager pm = (PowerManager) this.getActivity().getApplicationContext().getSystemService(Context.POWER_SERVICE);
-            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "loklak");
-            wl.acquire();
+
             showsplash = !Preferences.getConfig(Preferences.Key.APPGRANTED, false);
             // first message
             statusLine.show("warming up loklak wok", 4000);
@@ -223,11 +244,15 @@ public class MainActivity extends AppCompatActivity {
                 textAlign(CENTER, CENTER);
                 color_dark_fill();
                 int y = GraphicData.cow_outline.getMaxY() + 5 * fontsize;
-                text("AGREEMENT", width / 2, y); y += 2 * fontsize;
+                text("AGREEMENT", width / 2, y);
+                y += 2 * fontsize;
                 textFont(font, fontsize);
-                text("This app harvests tweets from twitter", width / 2, y); y += fontsize;
-                text("and sends them to loklak.org", width / 2, y); y += fontsize;
-                text("Push 'START' to agree", width / 2, y); y += fontsize;
+                text("This app harvests tweets from twitter", width / 2, y);
+                y += fontsize;
+                text("and sends them to loklak.org", width / 2, y);
+                y += fontsize;
+                text("Push 'START' to agree", width / 2, y);
+                y += fontsize;
 
                 // draw the buttons (always at last to make them visible at all cost)
                 buttons_splash.draw();
@@ -286,9 +311,9 @@ public class MainActivity extends AppCompatActivity {
                 if (unlocksum == 255 * 3) {
                     statusLine.clear();
                     acceptNonWifiConnection = true;
-                    buttons_missingwifi.getButton("unlock0").setStatus(0,0);
-                    buttons_missingwifi.getButton("unlock1").setStatus(0,0);
-                    buttons_missingwifi.getButton("unlock2").setStatus(0,0);
+                    buttons_missingwifi.getButton("unlock0").setStatus(0, 0);
+                    buttons_missingwifi.getButton("unlock1").setStatus(0, 0);
+                    buttons_missingwifi.getButton("unlock2").setStatus(0, 0);
                     //buttons_harvesting.getButton("offline").visible();
                 }
 
@@ -403,9 +428,9 @@ public class MainActivity extends AppCompatActivity {
 
                 randomX = (randomX + Harvester.displayMessages.size() - d) / 3;
 
-                // at some time load data from the newtork
-                if (frameCount % FRAME_RATE == 1 && this.getActivity() != null) {
-                    this.getActivity().runOnUiThread(new Runnable() {
+                // at some time load data from the network
+                if (frameCount % FRAME_RATE == 1) {
+                    MainActivity.handler.post(new Runnable() {
                         public void run() {
                             Harvester.harvest();
                         }
@@ -432,9 +457,11 @@ public class MainActivity extends AppCompatActivity {
         private void color_bright_stroke() {
             stroke(32, 180, 230);
         }
+
         private void color_bright_fill() {
             fill(255, 200, 41);
         }
+
         private void color_dark_fill() {
             fill(32, 180, 230);
         }

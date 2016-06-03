@@ -28,6 +28,8 @@ import android.util.Log;
 
 public class HarvestService extends IntentService {
 
+    private static final String TAG = HarvestService.class.getSimpleName();
+
     public HarvestService() {
         // method is required to keep the xml verifier for AndroidManifest silent
         super("harvester");
@@ -39,8 +41,8 @@ public class HarvestService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("HarvestService", "onHandleIntent intent = " + intent);
-        while (true) {
+        Log.d(TAG, "onHandleIntent intent = " + intent);
+        while (MainActivity.context != null) {
             if (Preferences.getConfig(Preferences.Key.APPGRANTED, false) && MainActivity.isConnectedWifi()) {
                 //Log.d("HarvestService", "onHandleIntent " + intent + (MainActivity.sketch.canDraw() ? ", app canDraw" : ""));
                 Harvester.harvest();
@@ -51,12 +53,12 @@ public class HarvestService extends IntentService {
 
     @Override
     public void onDestroy() {
-        Log.d("HarvestService", "destroyed");
+        Log.d(TAG, "destroyed");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("HarvestService", "onBind intend = " + intent);
+        Log.d(TAG, "onBind intend = " + intent);
         return mBinder;
     }
 
