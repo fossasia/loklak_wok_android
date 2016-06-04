@@ -1,20 +1,20 @@
 /**
- *  OutlineDrawing
- *  Copyright 07.12.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * OutlineDrawing
+ * Copyright 07.12.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.loklak.android.wok;
@@ -34,12 +34,12 @@ public class OutlineDrawing {
 
     private final static Random random = new Random(System.currentTimeMillis());
 
-    private List<StrokeMorph> strokes;
+    private final List<StrokeMorph> strokes;
     private int morphsteps;
     private int minx, maxx, miny, maxy;
 
     public OutlineDrawing() {
-        this.strokes = new ArrayList<StrokeMorph>();
+        this.strokes = new ArrayList<>();
         this.morphsteps = -1;
         this.minx = Integer.MAX_VALUE;
         this.maxx = Integer.MIN_VALUE;
@@ -63,7 +63,11 @@ public class OutlineDrawing {
             this.miny = Math.min(this.miny, yp);
             this.maxy = Math.max(this.maxy, yp);
             if (i == 0) {
-                x0 = xp; y0 = yp; xn = xp; yn = yp; continue;
+                x0 = xp;
+                y0 = yp;
+                xn = xp;
+                yn = yp;
+                continue;
             }
             this.strokes.add(new StrokeMorph(new Stroke(xn, yn, xp, yp)));
             xn = xp;
@@ -77,13 +81,13 @@ public class OutlineDrawing {
     }
 
     public void draw(PApplet pa, int step, int strength) {
-        for (StrokeMorph stroke: this.strokes) {
+        for (StrokeMorph stroke : this.strokes) {
             stroke.draw(pa, step, strength, 0, 0);
         }
     }
 
     public void draw(PApplet pa, int step, int strength, int randomX, int randomY) {
-        for (StrokeMorph stroke: this.strokes) {
+        for (StrokeMorph stroke : this.strokes) {
             stroke.draw(pa, step, strength, randomX, randomY);
         }
     }
@@ -110,7 +114,8 @@ public class OutlineDrawing {
      */
     public class StrokeMorph {
 
-        private Stroke s0, s1;
+        private final Stroke s0;
+        private Stroke s1;
         private boolean genuine; // non-genuine strokes are invisible at step 0 and at final step
 
         public StrokeMorph(Stroke stroke) {
@@ -137,10 +142,16 @@ public class OutlineDrawing {
             int x0, x1, y0, y1;
             if (step == 0 || s1 == null || morphsteps == -1) {
                 if (!genuine) return;
-                x0 = s0.x0; y0 = s0.y0; x1 = s0.x1; y1 = s0.y1;
+                x0 = s0.x0;
+                y0 = s0.y0;
+                x1 = s0.x1;
+                y1 = s0.y1;
             } else if (step >= morphsteps) {
                 if (!genuine) return;
-                x0 = s1.x0; y0 = s1.y0; x1 = s1.x1; y1 = s1.y1;
+                x0 = s1.x0;
+                y0 = s1.y0;
+                x1 = s1.x1;
+                y1 = s1.y1;
             } else {
                 // naive algorithm which does not compute a straight line
                 // TODO: compute position on the straight line between the points
@@ -178,7 +189,11 @@ public class OutlineDrawing {
      * a stroke is a line between two points
      */
     public static class Stroke {
-        public int x0, x1, y0, y1;
+        public final int x0;
+        public final int x1;
+        public final int y0;
+        public final int y1;
+
         public Stroke(int fromx, int fromy, int tox, int toy) {
             this.x0 = fromx;
             this.y0 = fromy;

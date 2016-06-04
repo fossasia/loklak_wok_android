@@ -1,20 +1,20 @@
 /**
- *  Buttons
- *  Copyright 28.11.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * Buttons
+ * Copyright 28.11.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.loklak.android.wok;
@@ -28,12 +28,12 @@ import processing.core.PApplet;
 @TargetApi(11)
 public class Buttons {
 
-    private PApplet sketch;
-    private LinkedHashMap<String, Button> buttons;
+    private final PApplet sketch;
+    private final LinkedHashMap<String, Button> buttons;
 
     public Buttons(PApplet sketch) {
         this.sketch = sketch;
-        this.buttons = new LinkedHashMap<String, Button>();
+        this.buttons = new LinkedHashMap<>();
     }
 
     public Button createButton() {
@@ -54,19 +54,19 @@ public class Buttons {
     }
 
     public void draw() {
-        for (Button button: this.buttons.values()) button.draw();
+        for (Button button : this.buttons.values()) button.draw();
     }
 
     public void mousePressed(int x, int y) {
-        for (Button button: this.buttons.values()) button.mousePressed(x, y);
+        for (Button button : this.buttons.values()) button.mousePressed(x, y);
     }
 
     public static class Button {
-        private PApplet sketch;
+        private final PApplet sketch;
         private int x, y, fontsize = 24, width = 5 * fontsize;
         private int tt = 500;
         private int borderWidth = 1;
-        private int col_r_text = 0, col_g_text  = 0, col_b_text = 0;
+        private int col_r_text = 0, col_g_text = 0, col_b_text = 0;
         private int col_r_border = 0, col_g_border = 0, col_b_border = 0;
         private int col_r_on = 0, col_g_on = 255, col_b_on = 0;
         private int col_r_off = 255, col_g_off = 0, col_b_off = 0;
@@ -79,7 +79,8 @@ public class Buttons {
 
         private Button(PApplet sketch) {
             this.sketch = sketch;
-            this.status = 0; this.sign = 0;
+            this.status = 0;
+            this.sign = 0;
             this.visible = true;
             this.disabled = false;
             this.activated = false;
@@ -88,20 +89,39 @@ public class Buttons {
 
         public Object clone() {
             Button b = new Button(this.sketch);
-            b.x = this.x; b.y = this.y; b.tt = this.tt; b.fontsize = this.fontsize; b.width = this.width;
+            b.x = this.x;
+            b.y = this.y;
+            b.tt = this.tt;
+            b.fontsize = this.fontsize;
+            b.width = this.width;
             b.borderWidth = this.borderWidth;
-            b.col_r_text = this.col_r_text; b.col_g_text = this.col_g_text; b.col_b_text = this.col_b_text;
-            b.col_r_border = this.col_r_border; b.col_g_border = this.col_g_border; b.col_b_border = this.col_b_border;
-            b.col_r_on = this.col_r_on; b.col_g_on = this.col_g_on; b.col_b_on = this.col_b_on;
-            b.col_r_off = this.col_r_off; b.col_g_off = this.col_g_off; b.col_b_off = this.col_b_off;
-            b.col_r_disabled = this.col_r_disabled; b.col_g_disabled = this.col_g_disabled; b.col_b_disabled = this.col_b_disabled;
-            b.ontext0 = this.ontext0; b.ontext1 = this.ontext1; b.ontext2 = this.ontext2;
-            b.offtext0 = this.offtext0; b.offtext1 = this.offtext1; b.offtext2 = this.offtext2;
+            b.col_r_text = this.col_r_text;
+            b.col_g_text = this.col_g_text;
+            b.col_b_text = this.col_b_text;
+            b.col_r_border = this.col_r_border;
+            b.col_g_border = this.col_g_border;
+            b.col_b_border = this.col_b_border;
+            b.col_r_on = this.col_r_on;
+            b.col_g_on = this.col_g_on;
+            b.col_b_on = this.col_b_on;
+            b.col_r_off = this.col_r_off;
+            b.col_g_off = this.col_g_off;
+            b.col_b_off = this.col_b_off;
+            b.col_r_disabled = this.col_r_disabled;
+            b.col_g_disabled = this.col_g_disabled;
+            b.col_b_disabled = this.col_b_disabled;
+            b.ontext0 = this.ontext0;
+            b.ontext1 = this.ontext1;
+            b.ontext2 = this.ontext2;
+            b.offtext0 = this.offtext0;
+            b.offtext1 = this.offtext1;
+            b.offtext2 = this.offtext2;
             return b;
         }
 
         public Button setCenter(int x, int y) {
-            this.x = x; this.y = y;
+            this.x = x;
+            this.y = y;
             return this;
         }
 
@@ -171,37 +191,51 @@ public class Buttons {
         }
 
         public Button setOnColor(int r, int g, int b) {
-            this.col_r_on = r; this.col_g_on = g; this.col_b_on = b;
+            this.col_r_on = r;
+            this.col_g_on = g;
+            this.col_b_on = b;
             return this;
         }
 
         public Button setOffColor(int r, int g, int b) {
-            this.col_r_off = r; this.col_g_off = g; this.col_b_off = b;
+            this.col_r_off = r;
+            this.col_g_off = g;
+            this.col_b_off = b;
             return this;
         }
 
         public Button setDisabledColor(int r, int g, int b) {
-            this.col_r_disabled = r; this.col_g_disabled = g; this.col_b_disabled = b;
+            this.col_r_disabled = r;
+            this.col_g_disabled = g;
+            this.col_b_disabled = b;
             return this;
         }
 
         public Button setBorderColor(int r, int g, int b) {
-            this.col_r_border = r; this.col_g_border = g; this.col_b_border = b;
+            this.col_r_border = r;
+            this.col_g_border = g;
+            this.col_b_border = b;
             return this;
         }
 
         public Button setTextColor(int r, int g, int b) {
-            this.col_r_text = r; this.col_g_text = g; this.col_b_text = b;
+            this.col_r_text = r;
+            this.col_g_text = g;
+            this.col_b_text = b;
             return this;
         }
 
         public Button setOnText(String text0, String text1, String text2) {
-            this.ontext0 = text0; this.ontext1 = text1; this.ontext2 = text2;
+            this.ontext0 = text0;
+            this.ontext1 = text1;
+            this.ontext2 = text2;
             return this;
         }
 
         public Button setOffText(String text0, String text1, String text2) {
-            this.offtext0 = text0;; this.offtext1 = text1; this.offtext2 = text2;
+            this.offtext0 = text0;
+            this.offtext1 = text1;
+            this.offtext2 = text2;
             return this;
         }
 
@@ -261,12 +295,14 @@ public class Buttons {
         }
 
         public Button setStatus(int status) {
-            this.status = status; this.sign = 0;
+            this.status = status;
+            this.sign = 0;
             return this;
         }
 
         public Button setStatus(int status, int sign) {
-            this.status = status; this.sign = sign;
+            this.status = status;
+            this.sign = sign;
             return this;
         }
 

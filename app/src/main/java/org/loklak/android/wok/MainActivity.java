@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // keep app awake
         PowerManager pm = (PowerManager) MainActivity.context.getSystemService(Context.POWER_SERVICE);
+        //noinspection deprecation
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "loklak");
         wakeLock.acquire();
     }
@@ -113,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
     public static class Sketch extends PApplet {
 
         int fontsize;
-        int randomX = 25, randomY = 0;
+        int randomX = 25;
+        final int randomY = 0;
         int voff = 0; // for smooth line drawing
         boolean showsplash = true;
         boolean wasWifiConnected = true;

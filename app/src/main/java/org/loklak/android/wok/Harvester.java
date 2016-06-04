@@ -1,20 +1,20 @@
 /**
- *  Harvester
- *  Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * Harvester
+ * Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -26,15 +26,15 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.loklak.android.tools.LogLines;
 import org.loklak.client.PushClient;
 import org.loklak.client.SearchClient;
 import org.loklak.client.SuggestClient;
+import org.loklak.harvester.TwitterScraper;
 import org.loklak.objects.MessageEntry;
 import org.loklak.objects.QueryEntry;
 import org.loklak.objects.ResultList;
 import org.loklak.objects.Timeline;
-import org.loklak.harvester.TwitterScraper;
-import org.loklak.android.tools.LogLines;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,23 +68,26 @@ public class Harvester {
     private static boolean isPushing = false, isLoading = false;
 
     private static void checkContext(Timeline tl, boolean front) {
-        for (MessageEntry tweet: tl) {
-            for (String user: tweet.getMentions()) checkContext("from:" + user, front);
-            for (String hashtag: tweet.getHashtags()) checkContext(hashtag, true);
+        for (MessageEntry tweet : tl) {
+            for (String user : tweet.getMentions()) checkContext("from:" + user, front);
+            for (String hashtag : tweet.getHashtags()) checkContext(hashtag, true);
         }
     }
+
     private static void checkContext(String s, boolean front) {
         if (!front && pendingContext.size() > MAX_PENDING_CONEXT_QUERIES) return; // queue is full
         if (!harvestedContext.contains(s) && !pendingContext.contains(s)) {
-            if (front) pendingContext.add(0, s); else pendingContext.add(s);
+            if (front) pendingContext.add(0, s);
+            else pendingContext.add(s);
         }
-        while (pendingContext.size() > MAX_PENDING_CONEXT_QUERIES) pendingContext.remove(pendingContext.size() - 1);
+        while (pendingContext.size() > MAX_PENDING_CONEXT_QUERIES)
+            pendingContext.remove(pendingContext.size() - 1);
         if (harvestedContext.size() > MAX_HARVESTED) harvestedContext.clear();
     }
 
-    public static BlockingQueue<Timeline> pushToBackendIndividualTimeline = new LinkedBlockingQueue<Timeline>();
-    public static BlockingQueue<Timeline> pushToBackendAccumulationTimeline = new LinkedBlockingQueue<Timeline>();
-    public static LogLines<MessageEntry> displayMessages = new LogLines<MessageEntry>(MAX_PENDING_DISPLAY_LINES);
+    public static final BlockingQueue<Timeline> pushToBackendIndividualTimeline = new LinkedBlockingQueue<>();
+    public static final BlockingQueue<Timeline> pushToBackendAccumulationTimeline = new LinkedBlockingQueue<>();
+    public static final LogLines<MessageEntry> displayMessages = new LogLines<>(MAX_PENDING_DISPLAY_LINES);
 
     public static void reduceDisplayMessages() {
         if (displayMessages.size() > 0) {
@@ -121,7 +124,6 @@ public class Harvester {
         // only if the push-work is done, harvest more
         isLoading = true;
         new LoadThread().execute(null, null, null);
-        return;
     }
 
 
@@ -141,9 +143,10 @@ public class Harvester {
                 }
 
                 // display the tweets
-                for (MessageEntry me: tl) {
+                for (MessageEntry me : tl) {
                     // we don't want to throttle down just because the display is too full
-                    if (displayMessages.size() >= MAX_PENDING_DISPLAY_LINES) reduceDisplayMessages();
+                    if (displayMessages.size() >= MAX_PENDING_DISPLAY_LINES)
+                        reduceDisplayMessages();
                     // add a line at the end of the list
                     displayMessages.add(me);
                 }
@@ -175,11 +178,15 @@ public class Harvester {
                         try {
                             Timeline tl = SearchClient.search(backend, "", Timeline.Order.CREATED_AT, "cache", 100, 0, 60000);
                             checkContext(tl, false);
-                        } catch (IOException e) {}
+                        } catch (IOException e) {
+                        }
                     }
                     // if we still don't have any context, we are a bit helpless and hope that this situation
                     // will be better in the future. To prevent that this is called excessively fast, do a pause.
-                    if (pendingContext.size() == 0) try {Thread.sleep(10000);} catch (InterruptedException e) {}
+                    if (pendingContext.size() == 0) try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                    }
                 }
             } catch (IOException | JSONException e) {
 
@@ -203,7 +210,7 @@ public class Harvester {
             }
 
             // display the tweets
-            for (MessageEntry me: tl) {
+            for (MessageEntry me : tl) {
                 // we don't want to throttle down just because the display is too full
                 if (displayMessages.size() >= MAX_PENDING_DISPLAY_LINES) reduceDisplayMessages();
                 // add a line at the end of the list
@@ -219,10 +226,15 @@ public class Harvester {
             isLoading = false;
             return null;
         }
+
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
+
         @Override
-        protected void onProgressUpdate(Void... values) {}
+        protected void onProgressUpdate(Void... values) {
+        }
+
         @Override
         protected void onPostExecute(Void result) {
             isLoading = false;
@@ -244,7 +256,6 @@ public class Harvester {
             Timeline tl = params[0];
             String apphash = Preferences.getConfig(Preferences.Key.APPHASH, "");
             tl.setPeerId(apphash);
-            boolean success = false;
             try {
                 for (int i = 0; i < 5; i++) {
                     try {
@@ -279,10 +290,15 @@ public class Harvester {
             Log.d("PushThread", "retrieval of " + tl.size() + " new messages for q = " + q + ", scheduled push");
             return null;
         }
+
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
+
         @Override
-        protected void onProgressUpdate(Void... values) {}
+        protected void onProgressUpdate(Void... values) {
+        }
+
         @Override
         protected void onPostExecute(Void result) {
             isPushing = false;
@@ -300,7 +316,7 @@ public class Harvester {
      */
     public static Timeline takeTimelineMin(final BlockingQueue<Timeline> dumptl, final Timeline.Order order, final int minsize) {
         int c = 0;
-        for (Timeline tl: dumptl) c += tl.size();
+        for (Timeline tl : dumptl) c += tl.size();
         if (c < minsize) return new Timeline(order);
 
         // now flush the timeline queue completely
