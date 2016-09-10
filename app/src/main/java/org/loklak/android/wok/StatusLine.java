@@ -1,20 +1,20 @@
 /**
- *  StatusLine
- *  Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * StatusLine
+ * Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.loklak.android.wok;
@@ -28,27 +28,39 @@ import processing.core.PApplet;
 @TargetApi(11)
 public class StatusLine {
 
-    private static char FULL_BLOCK = (char) 0x25A0;
-    private static char SPACE = (char) 32;
+    private static final char FULL_BLOCK = (char) 0x25A0;
+    private static final char SPACE = (char) 32;
 
-    private PApplet pa;
-    private int y, fontsize, r, g, b;
-    private LinkedBlockingQueue<Status> messages;
-    private int letters;
-    private long completeTime;
+    private final PApplet pa;
+    private int y;
+    private final int fontsize;
+    private final int r;
+    private final int g;
+    private final int b;
+    private final LinkedBlockingQueue<Status> messages;
+    private final int letters;
+    private final long completeTime;
 
     private static class Status {
-        public String message;
+        public final String message;
         public int time;
         public long start;
+
         public Status(String message, int time) {
-            this.message = message; this.time = time; this.start = 0;
+            this.message = message;
+            this.time = time;
+            this.start = 0;
         }
     }
 
     public StatusLine(PApplet pa, int fontsize, int r, int g, int b) {
-        this.pa = pa; this.y = 0; this.fontsize = fontsize; this.r = r; this.g = g; this.b = b;
-        this.messages = new LinkedBlockingQueue<Status>();
+        this.pa = pa;
+        this.y = 0;
+        this.fontsize = fontsize;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.messages = new LinkedBlockingQueue<>();
         this.letters = -1;
         this.completeTime = -1;
     }
@@ -67,9 +79,11 @@ public class StatusLine {
 
     public void show(String message, int millis) {
         try {
-            if (this.messages.size() > 1) for (Status status: messages) status.time = status.time / 2;
+            if (this.messages.size() > 1)
+                for (Status status : messages) status.time = status.time / 2;
             this.messages.put(new Status(message, Math.max(4000, millis)));
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        }
     }
 
     public void draw() {

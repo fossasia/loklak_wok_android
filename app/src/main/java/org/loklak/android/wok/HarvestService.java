@@ -1,20 +1,20 @@
 /**
- *  HarvestService
- *  Copyright 07.12.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * HarvestService
+ * Copyright 07.12.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.loklak.android.wok;
@@ -28,6 +28,8 @@ import android.util.Log;
 
 public class HarvestService extends IntentService {
 
+    private static final String TAG = HarvestService.class.getSimpleName();
+
     public HarvestService() {
         // method is required to keep the xml verifier for AndroidManifest silent
         super("harvester");
@@ -39,8 +41,8 @@ public class HarvestService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("HarvestService", "onHandleIntent intent = " + intent);
-        while (true) {
+        Log.d(TAG, "onHandleIntent intent = " + intent);
+        while (MainActivity.context != null) {
             if (Preferences.getConfig(Preferences.Key.APPGRANTED, false) && MainActivity.isConnectedWifi()) {
                 //Log.d("HarvestService", "onHandleIntent " + intent + (MainActivity.sketch.canDraw() ? ", app canDraw" : ""));
                 Harvester.harvest();
@@ -51,12 +53,12 @@ public class HarvestService extends IntentService {
 
     @Override
     public void onDestroy() {
-        Log.d("HarvestService", "destroyed");
+        Log.d(TAG, "destroyed");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("HarvestService", "onBind intend = " + intent);
+        Log.d(TAG, "onBind intend = " + intent);
         return mBinder;
     }
 

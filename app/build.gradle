@@ -22,11 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile files('libs/android-core.jar')
-    compile files('libs/signpost-commonshttp4.jar')
-    compile files('libs/signpost-core.jar')
-    compile files('libs/joda-time-2.8.2.jar')
-    compile files('libs/joda-convert-1.2.jar')
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'org.joda:joda-convert:1.8'
+    compile 'joda-time:joda-time:2.9.4'
+    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
+    compile 'oauth.signpost:signpost-core:1.2.1.2'
     compile files('libs/loklakj_lib.jar')
+    compile files('libs/android-core.jar')
 }

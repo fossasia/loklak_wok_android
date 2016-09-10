@@ -1,20 +1,20 @@
 /**
- *  Shapes
- *  Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * Shapes
+ * Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.loklak.android.wok;
@@ -57,7 +57,7 @@ public class Shapes extends HashMap<String, Shapes.Line> {
         // calculate normalization factor
         float size = ((float) width) / ((float) (this.maxx - minx));
         // transform all points into the new positions
-        for (Line s: this.values()) {
+        for (Line s : this.values()) {
             s.transform(minx, miny, size);
         }
         // store the resulting dimension of the shape
@@ -93,15 +93,41 @@ public class Shapes extends HashMap<String, Shapes.Line> {
             }
         }
 
-        private int min(int o, int[] p) {int m = Integer.MAX_VALUE; for (int i = o; i < p.length; i += 2) m = Math.min(m, p[i]); return m;}
-        private int max(int o, int[] p) {int m = Integer.MIN_VALUE; for (int i = o; i < p.length; i += 2) m = Math.max(m, p[i]); return m;}
-        private int min(int o) {return Math.min(min(o, this.outer), this.inner == null ? Integer.MAX_VALUE : min(o, this.inner));}
-        private int max(int o) {return Math.max(max(o, this.outer), this.inner == null ? Integer.MIN_VALUE : max(o, this.inner));}
+        private int min(int o, int[] p) {
+            int m = Integer.MAX_VALUE;
+            for (int i = o; i < p.length; i += 2) m = Math.min(m, p[i]);
+            return m;
+        }
 
-        public int maxx() {return max(0);}
-        public int maxy() {return max(1);}
-        public int minx() {return min(0);}
-        public int miny() {return min(1);}
+        private int max(int o, int[] p) {
+            int m = Integer.MIN_VALUE;
+            for (int i = o; i < p.length; i += 2) m = Math.max(m, p[i]);
+            return m;
+        }
+
+        private int min(int o) {
+            return Math.min(min(o, this.outer), this.inner == null ? Integer.MAX_VALUE : min(o, this.inner));
+        }
+
+        private int max(int o) {
+            return Math.max(max(o, this.outer), this.inner == null ? Integer.MIN_VALUE : max(o, this.inner));
+        }
+
+        public int maxx() {
+            return max(0);
+        }
+
+        public int maxy() {
+            return max(1);
+        }
+
+        public int minx() {
+            return min(0);
+        }
+
+        public int miny() {
+            return min(1);
+        }
 
         public void draw(PApplet pa, int x, int y, int randomX, int randomY) {
             draw(pa, x, y, this.outer, randomX, randomY);
@@ -114,10 +140,18 @@ public class Shapes extends HashMap<String, Shapes.Line> {
             for (int i = 0; i < p.length; i += 2) {
                 int xp = x + p[i];
                 int yp = y + p[i + 1];
-                if (randomX > 0) { xp += random.nextInt(randomX) - randomX / 2;}
-                if (randomY > 0) { yp += random.nextInt(randomY) - randomY / 2;}
+                if (randomX > 0) {
+                    xp += random.nextInt(randomX) - randomX / 2;
+                }
+                if (randomY > 0) {
+                    yp += random.nextInt(randomY) - randomY / 2;
+                }
                 if (i == 0) {
-                    x0 = xp; y0 = yp; xn = xp; yn = yp; continue;
+                    x0 = xp;
+                    y0 = yp;
+                    xn = xp;
+                    yn = yp;
+                    continue;
                 }
                 pa.line(xn, yn, xp, yp);
                 xn = xp;

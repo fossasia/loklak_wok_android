@@ -1,20 +1,20 @@
 /**
- *  GraphicData
- *  Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program in the file lgpl21.txt
- *  If not, see <http://www.gnu.org/licenses/>.
+ * GraphicData
+ * Copyright 29.11.2015 by Michael Peter Christen, @0rb1t3r
+ * <p/>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p/>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program in the file lgpl21.txt
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.loklak.android.wok;
@@ -84,7 +84,9 @@ public class GraphicData {
     public final static Shapes.Line shape_cow_7 = new Shapes.Line(new int[]{417, 286, 409, 279, 403, 268, 401, 260, 399, 251, 404, 240, 412, 229, 422, 222, 434, 220, 449, 224, 459, 231, 466, 254, 466, 264, 463, 274, 458, 281, 452, 285, 443, 289, 425, 289}, null);
 
 
-    public static Shapes loklakShape, wifiShape, cowShape;
+    public static final Shapes loklakShape;
+    public static final Shapes wifiShape;
+    public static final Shapes cowShape;
     public static OutlineDrawing wifi_outline, headline_outline, cow_outline;
 
     static {
@@ -145,7 +147,7 @@ public class GraphicData {
 
         // pre-drawing of graphics into outline drawings
         wifi_outline = new OutlineDrawing();
-        for (Shapes.Line line: wifiShape.values()) {
+        for (Shapes.Line line : wifiShape.values()) {
             wifi_outline.add(line,
                     (width - wifiShape.maxx) / 2,
                     loklakShape.maxy + 3 * fontsize,
@@ -167,7 +169,7 @@ public class GraphicData {
         headline_outline.add(shape_char_k, xo + 9 * cw, vpos, true);
 
         cow_outline = new OutlineDrawing();
-        for (Shapes.Line line: cowShape.values()) {
+        for (Shapes.Line line : cowShape.values()) {
             cow_outline.add(line,
                     (width - cowShape.maxx) / 2,
                     loklakShape.maxy + 4 * fontsize,
