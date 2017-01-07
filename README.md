@@ -1,4 +1,7 @@
 # loklak wok for android
+
+[![Build Status](https://travis-ci.org/fossasia/loklak_wok_android.svg?branch=master)](https://travis-ci.org/fossasia/loklak_wok_android)
+
 This is a message harvesting peer for the loklak_server, running on android.
 
 This app does not require any user interaction on the mobile phone. Therefore it does not need to follow
