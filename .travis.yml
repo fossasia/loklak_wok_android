@@ -28,10 +28,10 @@ before_script:
 script:
   - ./gradlew build
   - ./gradlew assembleRelease
+  # Success or not if a pull request is merged the apk should be updated.
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./scripts/coala_patch.sh; fi'
 notifications:
   webhooks:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - cd ..
-  - chmod +x $HOME/build/fossasia/open-event-android/upload-apk.sh
-  - sh $HOME/build/fossasia/open-event-android/upload-apk.sh
+
