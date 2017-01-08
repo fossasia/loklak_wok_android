@@ -20,7 +20,7 @@ throw away the processing graphics environment and use the loklak library to sea
 If you want to use loklak wok as such a tweet-search client, just remove everything in the package
 org.loklak.android.wok. Use the class org.loklak.android.harvester.TwitterScraper to load tweets from
 twitter witout the need for an application key from twitter. Please be kind and push search results from
-such harvestings to loklak.org by simply calling new PushClient.push(new String[]{"http://loklak.org"}, timeline);
+such harvestings to api.loklak.org by simply calling new PushClient.push(new String[]{"http://api.loklak.org"}, timeline);
 You may also set up your own loklak server and push to that server if you like to.
 
 ## LICENSE
