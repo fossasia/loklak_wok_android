@@ -55,7 +55,7 @@ public class Harvester {
     private final static int MAX_HARVESTED = 10000; // just to prevent a memory leak with possible OOM after a long time we flush that cache after a while
     private final static int HITS_LIMIT_4_QUERIES = 30;
     private final static int FETCH_RANDOM = 3;
-    public final static String backend = "http://loklak.org";
+    public final static String backend = "http://api.loklak.org";
     //public final static String backend = "http://10.0.2.2:9001";
 
     public final static LinkedHashSet<String> pendingQueries = new LinkedHashSet<>();
@@ -174,7 +174,7 @@ public class Harvester {
                     // the backend does not have any new query words for this time.
                     if (pendingContext.size() == 0) {
                         // try to fill the pendingContext using a matchall-query from the cache
-                        // http://loklak.org/api/search.json?source=cache&q=
+                        // http://api.loklak.org/api/search.json?source=cache&q=
                         try {
                             Timeline tl = SearchClient.search(backend, "", Timeline.Order.CREATED_AT, "cache", 100, 0, 60000);
                             checkContext(tl, false);

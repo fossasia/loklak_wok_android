@@ -235,9 +235,9 @@ public class MainActivity extends AppCompatActivity {
             // draw the screen content below the status line according to app situation
             if (showsplash) {
 
-                // ==== SHOW GREETING AND ASK FOR PERMISSION TO HARVETS DATA FOR loklak.org ====
+                // ==== SHOW GREETING AND ASK FOR PERMISSION TO HARVETS DATA FOR api.loklak.org ====
                 if (statusLine.getQueueSize() == 0) {
-                    statusLine.show("Welcome to the loklak.org data harvesting app", 3000);
+                    statusLine.show("Welcome to the api.loklak.org data harvesting app", 3000);
                 }
 
                 GraphicData.cow_outline.draw(this, 0, 2, 0, 0);
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 textFont(font, fontsize);
                 text("This app harvests tweets from twitter", width / 2, y);
                 y += fontsize;
-                text("and sends them to loklak.org", width / 2, y);
+                text("and sends them to api.loklak.org", width / 2, y);
                 y += fontsize;
                 text("Push 'START' to agree", width / 2, y);
                 y += fontsize;
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                                 statusLine.show("Pending Lines: " + Harvester.displayMessages.size(), 1000);
                             break;
                         case 3:
-                            statusLine.show("http://loklak.org", 2000);
+                            statusLine.show("http://api.loklak.org", 2000);
                             break;
                         case 4:
                             if (Harvester.contribution_message_count > 0)
