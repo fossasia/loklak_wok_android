@@ -1,6 +1,6 @@
 language: android
 jdk: oraclejdk8
-sudo: true
+sudo: required
 env:
   global:
   - GRADLE_OPTS="-Xmx512m"
@@ -24,12 +24,12 @@ android:
   - extra-android-m2repository
   - sys-img-armeabi-v7a-$ANDROID_TARGET
 before_script:
-  - cd android
+  - chmod +x gradlew
 script:
   - ./gradlew build
   - ./gradlew assembleRelease
   # Success or not if a pull request is merged the apk should be updated if it can be build
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./update-apk.sh; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./update-apk.sh; fi'
 notifications:
   webhooks:
 after_success:
