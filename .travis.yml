@@ -29,7 +29,7 @@ script:
   - ./gradlew build
   - ./gradlew assembleRelease
   # Success or not if a pull request is merged the apk should be updated if it can be build
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./update-apk.sh; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./update-apk.sh; fi'
 notifications:
   webhooks:
 after_success:
