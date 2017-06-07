@@ -19,6 +19,7 @@ android:
   components:
   - tools
   - platform-tools
+  - tools
   - build-tools-$ANDROID_BUILD_TOOLS_VERSION
   - android-$ANDROID_API_LEVEL
   - addon-$ANDROID_TAG-google-$ANDROID_API_LEVEL
