@@ -38,6 +38,11 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
+licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
 notifications:
   webhooks:
 
