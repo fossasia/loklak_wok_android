@@ -1,5 +1,11 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+
+    <!-- row_tweet_search_suggest -->
+    <dimen name="suggest_query_font_size">20sp</dimen>
+    <dimen name="suggest_query_padding">24dp</dimen>
+
+    <!-- fragment_suggest -->
+    <dimen name="clear_image_button_width">48dp</dimen>
 </resources>
