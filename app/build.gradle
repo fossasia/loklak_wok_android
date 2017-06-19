@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -6,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "org.loklak.android.wok"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.2"
@@ -21,16 +23,41 @@ android {
     lintOptions {
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'org.joda:joda-convert:1.8'
-    compile 'joda-time:joda-time:2.9.4'
-    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-    compile 'oauth.signpost:signpost-core:1.2.1.2'
     compile files('libs/loklakj_lib.jar')
     compile files('libs/android-core.jar')
+
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+
+    compile 'org.joda:joda-convert:1.8'
+    compile 'joda-time:joda-time:2.9.4'
+
+    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
+    compile 'oauth.signpost:signpost-core:1.2.1.2'
+
+    compile 'com.google.code.gson:gson:2.8.1'
+
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    compile 'com.jakewharton:butterknife:8.6.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+
+    compile 'io.reactivex.rxjava2:rxjava:2.0.5'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
 }
