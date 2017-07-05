@@ -17,13 +17,16 @@
             android:name=".HarvestService"
             android:exported="false" />
 
-        <activity
-            android:name="org.loklak.android.ui.activity.SuggestActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize">
+        <activity android:name="org.loklak.android.ui.activity.TweetHarvestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="org.loklak.android.ui.activity.SuggestActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
 
         <activity android:name="org.loklak.android.ui.activity.SearchActivity"></activity>

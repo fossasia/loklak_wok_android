@@ -43,7 +43,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-import static org.loklak.android.utility.Constants.TWEET_SEARCH_SUGGESTION_QUERY_KEY;
+import static org.loklak.android.Constants.TWEET_SEARCH_SUGGESTION_QUERY_KEY;
 
 
 public class SuggestFragment extends Fragment implements SuggestAdapter.OnSuggestionClickListener {
@@ -143,7 +143,7 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
 
         mRealm.beginTransaction();
         mRealm.delete(Query.class);
-        mRealm.copyToRealm(mSuggestAdapter.getmQueries());
+        mRealm.copyToRealm(mSuggestAdapter.getQueries());
         mRealm.commitTransaction();
 
         super.onStop();

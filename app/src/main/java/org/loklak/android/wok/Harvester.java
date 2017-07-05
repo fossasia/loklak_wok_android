@@ -246,7 +246,7 @@ public class Harvester {
         protected Void doInBackground(Timeline... params) {
             /*
             try {
-                Timeline ttl = SearchClient.search(backend, "ccc", Timeline.Order.CREATED_AT, "cache", 100, 0, 4000);
+                Status ttl = SearchClient.search(backend, "ccc", Status.Order.CREATED_AT, "cache", 100, 0, 4000);
                 for (MessageEntry me: ttl) {
                     Log.d("ttl", me.getText(100000, null));
                 }

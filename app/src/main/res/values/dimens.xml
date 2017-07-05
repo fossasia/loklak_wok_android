@@ -8,4 +8,11 @@
 
     <!-- fragment_suggest -->
     <dimen name="clear_image_button_width">48dp</dimen>
+
+    <!-- fragment_tweet_harvesting -->
+    <dimen name="tweet_harvesting_margin">8dp</dimen>
+    <dimen name="tweets_harvested_count">40sp</dimen>
+    <dimen name="message_font_size">16sp</dimen>
+    <dimen name="network_error_padding">24dp</dimen>
+    <dimen name="network_error_message_width">240dp</dimen>
 </resources>

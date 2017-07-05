@@ -53,7 +53,7 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.SuggestV
         notifyDataSetChanged();
     }
 
-    public List<Query> getmQueries() {
+    public List<Query> getQueries() {
         return mQueries;
     }
 

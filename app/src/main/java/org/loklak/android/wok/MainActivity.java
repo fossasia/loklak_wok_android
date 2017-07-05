@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 y += fontsize;
                 text("and sends them to api.loklak.org", width / 2, y);
                 y += fontsize;
-                text("Push 'START' to agree", width / 2, y);
+                text("ScrapedData 'START' to agree", width / 2, y);
                 y += fontsize;
 
                 // draw the buttons (always at last to make them visible at all cost)

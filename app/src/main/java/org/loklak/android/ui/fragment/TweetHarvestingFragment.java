@@ -1,0 +1,295 @@
+package org.loklak.android.ui.fragment;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.liquidplayer.service.MicroService;
+import org.liquidplayer.service.MicroService.EventListener;
+import org.loklak.android.Utility;
+import org.loklak.android.adapters.HarvestedTweetAdapter;
+import org.loklak.android.api.LoklakApi;
+import org.loklak.android.api.RestClient;
+import org.loklak.android.model.harvest.Push;
+import org.loklak.android.model.harvest.ScrapedData;
+import org.loklak.android.model.harvest.Status;
+import org.loklak.android.model.suggest.Query;
+import org.loklak.android.model.suggest.SuggestData;
+import org.loklak.android.ui.activity.SuggestActivity;
+import org.loklak.android.wok.R;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observables.ConnectableObservable;
+import io.reactivex.schedulers.Schedulers;
+
+public class TweetHarvestingFragment extends Fragment {
+
+    private final String LOG_TAG = TweetHarvestingFragment.class.getName();
+    private final String LC_START_EVENT = "start";
+    private final String LC_FETCH_TWEETS_EVENT = "fetchTweets";
+    private final String LC_GET_TWEETS_EVENT = "getTweets";
+    private final String LC_QUERY_EVENT = "queryEvent";
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.harvested_tweets_count)
+    TextView harvestedTweetsCountTextView;
+    @BindView(R.id.harvested_tweets_container)
+    RecyclerView recyclerView;
+    @BindView(R.id.network_error)
+    TextView networkErrorTextView;
+
+    @BindViews({
+            R.id.harvested_tweets_count,
+            R.id.harvested__tweet_count_message,
+            R.id.harvested_tweets_container})
+    List<View> networkViews;
+    private final ButterKnife.Action<View> VISIBLE = (view, index) -> view.setVisibility(View.VISIBLE);
+    private final ButterKnife.Action<View> GONE = (view, index) -> view.setVisibility(View.GONE);
+
+    @BindString(R.string.app_name)
+    String appName;
+
+    private HarvestedTweetAdapter mHarvestedTweetAdapter;
+
+    private List<String> mSuggestionQuerries = new ArrayList<>();
+    private int mInnerCounter = 0;
+    private int mHarvestedTweets = 0;
+
+    private Gson mGson;
+    private CompositeDisposable mCompositeDisposable;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_tweet_harvesting, container, false);
+        ButterKnife.bind(this, rootView);
+        mGson = Utility.getGsonForPrivateVariableClass();
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle(appName);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mHarvestedTweetAdapter = new HarvestedTweetAdapter(new ArrayList<>());
+        recyclerView.setAdapter(mHarvestedTweetAdapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_tweet_harvesting, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case R.id.search_tweets:
+                openSuggestActivity();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void openSuggestActivity() {
+        Intent intent = new Intent(getActivity(), SuggestActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSuggestionQuerries.clear();
+        mCompositeDisposable = new CompositeDisposable();
+        displayAndPostScrapedData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCompositeDisposable.dispose();
+    }
+
+    @OnClick(R.id.network_error)
+    public void onNetworkErrorTextViewClick(View v) {
+        ButterKnife.apply(networkViews, VISIBLE);
+        networkErrorTextView.setVisibility(View.GONE);
+        mSuggestionQuerries.clear();
+        displayAndPostScrapedData();
+    }
+
+    /**
+     * Loklak's <code>suggest</code> API is used to fetch tweet search suggestions.
+     * @return A string Observable that can be used to scrape tweets.
+     */
+    private Observable<String> fetchSuggestions() {
+        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
+        Observable<SuggestData> observable = loklakApi.getSuggestions("", 2);
+        return observable.flatMap(suggestData -> {
+            List<Query> queryList = suggestData.getQueries();
+            List<String> queries = new ArrayList<>();
+            for (Query query : queryList) {
+                queries.add(query.getQuery());
+            }
+            return Observable.fromIterable(queries);
+        });
+    }
+
+    /**
+     * Tweets are scraped using JavaScript scraper({@link org.loklak.android.wok.R.raw#twitter}).
+     * @param query Query parameter to search tweets and scrape them.
+     * @return {@link ScrapedData} Observable used to display scraped tweets and push to loklak.
+     */
+    private Observable<ScrapedData> getScrapedTweets(final String query) {
+        final String LC_TWITTER_URI = "android.resource://org.loklak.android.wok/raw/twitter";
+        URI uri = URI.create(LC_TWITTER_URI);
+        return Observable.create(emitter -> {
+            EventListener startEventListener = (service, event, payload) -> {
+                    service.emit(LC_QUERY_EVENT, query);
+                service.emit(LC_FETCH_TWEETS_EVENT);
+            };
+
+            EventListener getTweetsEventListener = (service, event, payload) -> {
+                ScrapedData scrapedData = mGson.fromJson(payload.toString(), ScrapedData.class);
+                emitter.onNext(scrapedData);
+            };
+
+            MicroService.ServiceStartListener serviceStartListener = (service -> {
+                service.addEventListener(LC_START_EVENT, startEventListener);
+                service.addEventListener(LC_GET_TWEETS_EVENT, getTweetsEventListener);
+            });
+
+            MicroService microService = new MicroService(getActivity(), uri, serviceStartListener);
+            microService.start();
+        });
+    }
+
+    /**
+     * Suggestions are fetched periodically using <code>fetchSuggestions</code>.
+     * @param time A mandatory parameter when <code>flatMap</code> is used for <code>interval</code>
+     *             operator of RxJava.
+     * @return A String Observable whihch is a suggestion.
+     */
+    private Observable<String> getSuggestionsPeriodically(Long time) {
+        if (mSuggestionQuerries.isEmpty()) {
+            mInnerCounter = 0;
+            return fetchSuggestions();
+        } else { // wait for a previous request to complete
+            mInnerCounter++;
+            if (mInnerCounter > 3) { // if some strange error occurs
+                mSuggestionQuerries.clear();
+            }
+            return Observable.never();
+        }
+    }
+
+    private void displayScrapedData(ScrapedData scrapedData) {
+        String query = scrapedData.getQuery();
+        List<Status> statuses = scrapedData.getStatuses();
+        mSuggestionQuerries.remove(query);
+        if (mHarvestedTweetAdapter.getItemCount() > 80) {
+            mHarvestedTweetAdapter.clearAdapter();
+        }
+        mHarvestedTweetAdapter.addHarvestedTweets(statuses);
+        int count = mHarvestedTweetAdapter.getItemCount() - 1;
+        recyclerView.scrollToPosition(count);
+    }
+
+    private void setNetworkErrorView(Throwable throwable) {
+        Log.e(LOG_TAG, throwable.toString());
+        ButterKnife.apply(networkViews, GONE);
+        networkErrorTextView.setVisibility(View.VISIBLE);
+    }
+
+    private Observable<Push> pushScrapedData(ScrapedData scrapedData) throws Exception {
+        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
+        List<Status> statuses = scrapedData.getStatuses();
+        String data = mGson.toJson(statuses);
+        JSONArray jsonArray = new JSONArray(data);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("statuses", jsonArray);
+        return loklakApi.pushTweetsToLoklak(jsonObject.toString());
+    }
+
+    private void displayAndPostScrapedData() {
+        ConnectableObservable<ScrapedData> observable = Observable.interval(4, TimeUnit.SECONDS)
+                .flatMap(this::getSuggestionsPeriodically)
+                .flatMap(query -> {
+                    mSuggestionQuerries.add(query);
+                    return getScrapedTweets(query);
+                })
+                .retry(2)
+                .publish();
+
+        Disposable viewDisposable = observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::displayScrapedData,
+                        this::setNetworkErrorView
+                );
+        mCompositeDisposable.add(viewDisposable);
+
+        Disposable pushDisposable = observable
+                .flatMap(this::pushScrapedData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        push -> {
+                            mHarvestedTweets += push.getRecords();
+                            harvestedTweetsCountTextView.setText(String.valueOf(mHarvestedTweets));
+                        },
+                        throwable -> {}
+                );
+        mCompositeDisposable.add(pushDisposable);
+
+        Disposable publishDisposable = observable.connect();
+        mCompositeDisposable.add(publishDisposable);
+    }
+}
