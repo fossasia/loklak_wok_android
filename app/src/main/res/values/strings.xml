@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">loklak wok</string>
+    <string name="app_name">Loklak wok</string>
 
     <!-- fragment_suggest -->
     <string name="tweet_search_edit_text_hint">Search Twitter</string>
     <string name="network_request_error">Cannot fetch suggestions, Try Again!</string>
     <string name="clear_image_desc">Clears Search EditText for a new search</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- fragment_tweet_harvesting -->
+    <string name="network_error_retry">Couldn\'t scrape data. Click here to try again!</string>
+    <string name="zero_tweets">0</string>
+    <string name="count_message">TWEETS HARVESTED</string>
+
 </resources>
