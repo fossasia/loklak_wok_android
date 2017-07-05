@@ -45,15 +45,16 @@
         android:layout_marginTop="@dimen/tweet_harvesting_margin"/>
 
     <TextView
-        android:layout_width="@dimen/network_error_message_width"
+        android:layout_width="@dimen/message_width"
         android:layout_height="wrap_content"
         android:id="@+id/network_error"
-        android:padding="@dimen/network_error_padding"
+        android:padding="@dimen/message_padding"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/network_error_retry"
         android:textSize="@dimen/message_font_size"
+        android:textStyle="bold"
         android:textColor="@android:color/black"
         android:visibility="gone"/>
 
