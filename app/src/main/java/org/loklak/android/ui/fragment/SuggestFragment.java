@@ -81,7 +81,6 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_suggest, container, false);
         ButterKnife.bind(this, rootView);
-        mCompositeDisposable = new CompositeDisposable();
         mRealm = Realm.getDefaultInstance();
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -96,14 +95,6 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
             }
             return false;
         });
-        Disposable disposable = RxTextView.textChanges(tweetSearchEditText)
-                .debounce(400, TimeUnit.MILLISECONDS)
-                .subscribe(charSequence -> {
-                    if (charSequence.length() > 0) {
-                        fetchSuggestion();
-                    }
-                });
-        mCompositeDisposable.add(disposable);
 
         refreshSuggestions.setOnRefreshListener(() -> {
             setBeforeRefreshingState();
@@ -116,9 +107,16 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         tweetSearchSuggestions.setLayoutManager(new LinearLayoutManager(getActivity()));
         tweetSearchSuggestions.setAdapter(mSuggestAdapter);
 
-        fetchSuggestion();
-
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(LOG_TAG, "Inside onStart");
+        mCompositeDisposable = new CompositeDisposable();
+        updateSuggestions();
+        fetchSuggestion();
     }
 
     @OnClick(R.id.clear_image_button)
@@ -137,6 +135,17 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         mCompositeDisposable.add(disposable);
     }
 
+    private void updateSuggestions() {
+        Disposable disposable = RxTextView.textChanges(tweetSearchEditText)
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .subscribe(charSequence -> {
+                    if (charSequence.length() > 0) {
+                        fetchSuggestion();
+                    }
+                });
+        mCompositeDisposable.add(disposable);
+    }
+
     @Override
     public void onStop() {
         mCompositeDisposable.dispose();
@@ -145,7 +154,7 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         mRealm.delete(Query.class);
         mRealm.copyToRealm(mSuggestAdapter.getQueries());
         mRealm.commitTransaction();
-
+        Log.e(LOG_TAG, "Inside onStop");
         super.onStop();
     }
 
