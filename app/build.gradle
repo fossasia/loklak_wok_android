@@ -64,4 +64,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
 
     compile 'com.github.LiquidPlayer:LiquidCore:0.2.2'
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

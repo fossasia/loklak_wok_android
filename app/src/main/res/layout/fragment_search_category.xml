@@ -1,0 +1,40 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.loklak.android.ui.fragment.SearchCategoryFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/searched_tweet_container" />
+
+    <TextView
+        android:layout_width="@dimen/message_width"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_search_result_found"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/message_padding"
+        android:gravity="center"
+        android:textSize="@dimen/message_font_size"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="@dimen/message_width"
+        android:layout_height="wrap_content"
+        android:id="@+id/network_error"
+        android:padding="@dimen/message_padding"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:text="@string/network_error_retry"
+        android:textSize="@dimen/message_font_size"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -1,6 +1,9 @@
 package org.loklak.android.api;
 
+import android.support.annotation.Nullable;
+
 import org.loklak.android.model.harvest.Push;
+import org.loklak.android.model.search.Search;
 import org.loklak.android.model.suggest.SuggestData;
 
 import io.reactivex.Observable;
@@ -22,4 +25,10 @@ public interface LoklakApi {
     @POST("/api/push.json")
     @FormUrlEncoded
     Observable<Push> pushTweetsToLoklak(@Field("data") String data);
+
+    @GET("api/search.json")
+    Observable<Search> getSearchedTweets(
+            @Query("q") String query,
+            @Query("filter") String filter,
+            @Query("count") int count);
 }
