@@ -64,6 +64,7 @@ public class SearchFragment extends Fragment {
             if (hasFocus) {
                 Intent suggestIntent = new Intent(getActivity(), SuggestActivity.class);
                 startActivity(suggestIntent);
+                getActivity().overridePendingTransition(R.anim.back_button_enter, R.anim.back_button_exit);
             }
         });
 
@@ -89,7 +90,7 @@ public class SearchFragment extends Fragment {
     }
 
     @OnClick(R.id.clear_image_button)
-    public void setOnClickClearImageButtonListener(View view) {
+    public void setOnClickClearImageButtonListener() {
         tweetSearchEditText.setText("");
         tweetSearchEditText.clearFocus();
     }

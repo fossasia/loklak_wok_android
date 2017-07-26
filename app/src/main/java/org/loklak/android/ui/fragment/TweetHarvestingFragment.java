@@ -140,6 +140,7 @@ public class TweetHarvestingFragment extends Fragment {
     private void openSuggestActivity() {
         Intent intent = new Intent(getActivity(), SuggestActivity.class);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
     }
 
     @Override
