@@ -20,4 +20,10 @@ public class SuggestActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.back_button_enter, R.anim.back_button_exit);
+    }
 }

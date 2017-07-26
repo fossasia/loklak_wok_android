@@ -113,14 +113,13 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
     @Override
     public void onStart() {
         super.onStart();
-        Log.e(LOG_TAG, "Inside onStart");
         mCompositeDisposable = new CompositeDisposable();
         updateSuggestions();
         fetchSuggestion();
     }
 
     @OnClick(R.id.clear_image_button)
-    public void onClickedClearImageButton(View view) {
+    public void onClickedClearImageButton() {
         tweetSearchEditText.setText("");
     }
 
@@ -154,7 +153,6 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         mRealm.delete(Query.class);
         mRealm.copyToRealm(mSuggestAdapter.getQueries());
         mRealm.commitTransaction();
-        Log.e(LOG_TAG, "Inside onStop");
         super.onStop();
     }
 
@@ -185,6 +183,7 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         Intent intent = new Intent(getActivity(), SearchActivity.class);
         intent.putExtra(TWEET_SEARCH_SUGGESTION_QUERY_KEY, searchQuery);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
     }
 
     private void setBeforeRefreshingState() {
