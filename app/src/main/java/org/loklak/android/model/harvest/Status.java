@@ -1,8 +1,11 @@
 package org.loklak.android.model.harvest;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Status {
+public class Status implements Parcelable{
 
     private User mUser;
     private String mScreenName;
@@ -54,4 +57,34 @@ public class Status {
     public List<String> getImages() {
         return mImages;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(mUser, flags);
+        dest.writeLong(mCreatedAt);
+        dest.writeString(mText);
+    }
+
+    private Status(Parcel source) {
+        mUser = source.readParcelable(User.class.getClassLoader());
+        mCreatedAt = source.readLong();
+        mText = source.readString();
+    }
+
+    public static final Parcelable.Creator<Status> CREATOR = new Creator<Status>() {
+        @Override
+        public Status createFromParcel(Parcel source) {
+            return new Status(source);
+        }
+
+        @Override
+        public Status[] newArray(int size) {
+            return new Status[size];
+        }
+    };
 }

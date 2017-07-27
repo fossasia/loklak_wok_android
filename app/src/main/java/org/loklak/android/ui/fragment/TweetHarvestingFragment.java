@@ -2,6 +2,7 @@ package org.loklak.android.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,9 @@ import io.reactivex.schedulers.Schedulers;
 public class TweetHarvestingFragment extends Fragment {
 
     private final String LOG_TAG = TweetHarvestingFragment.class.getName();
+    private final String PARCELABLE_RECYCLER_VIEW_STATE = "recycler_view_state";
+    private final String PARCELABLE_HARVESTED_TWEETS = "harvested_tweets";
+    private final String PARCELABLE_HARVESTED_TWEET_COUNT = "harvested_tweet_count";
     private final String LC_START_EVENT = "start";
     private final String LC_FETCH_TWEETS_EVENT = "fetchTweets";
     private final String LC_GET_TWEETS_EVENT = "getTweets";
@@ -113,9 +117,21 @@ public class TweetHarvestingFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mHarvestedTweetAdapter = new HarvestedTweetAdapter(new ArrayList<>());
+        if (savedInstanceState != null) {
+            mHarvestedTweets = savedInstanceState.getInt(PARCELABLE_HARVESTED_TWEET_COUNT);
+            harvestedTweetsCountTextView.setText(String.valueOf(mHarvestedTweets));
+
+            List<Status> savedStatues =
+                    savedInstanceState.getParcelableArrayList(PARCELABLE_HARVESTED_TWEETS);
+            mHarvestedTweetAdapter = new HarvestedTweetAdapter(savedStatues);
+
+            Parcelable recyclerViewState =
+                    savedInstanceState.getParcelable(PARCELABLE_RECYCLER_VIEW_STATE);
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        } else {
+            mHarvestedTweetAdapter = new HarvestedTweetAdapter(new ArrayList<>());
+        }
         recyclerView.setAdapter(mHarvestedTweetAdapter);
     }
 
@@ -144,21 +160,33 @@ public class TweetHarvestingFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         mSuggestionQuerries.clear();
         mCompositeDisposable = new CompositeDisposable();
         displayAndPostScrapedData();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<Status> harvestedTweets = mHarvestedTweetAdapter.getHarvestedTweetList();
+        outState.putParcelableArrayList(PARCELABLE_HARVESTED_TWEETS, harvestedTweets);
+
+        outState.putInt(PARCELABLE_HARVESTED_TWEET_COUNT, mHarvestedTweets);
+
+        Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(PARCELABLE_RECYCLER_VIEW_STATE, recyclerViewState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         mCompositeDisposable.dispose();
     }
 
     @OnClick(R.id.network_error)
-    public void onNetworkErrorTextViewClick(View v) {
+    public void onNetworkErrorTextViewClick() {
         ButterKnife.apply(networkViews, VISIBLE);
         networkErrorTextView.setVisibility(View.GONE);
         mSuggestionQuerries.clear();

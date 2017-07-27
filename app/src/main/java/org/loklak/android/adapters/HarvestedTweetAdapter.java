@@ -11,6 +11,7 @@ import org.loklak.android.model.harvest.Status;
 import org.loklak.android.model.harvest.User;
 import org.loklak.android.wok.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -50,6 +51,10 @@ public class HarvestedTweetAdapter
         int count = mHarvestedTweetList.size();
         mHarvestedTweetList.addAll(harvestedTweetList);
         notifyItemRangeInserted(getItemCount(), count);
+    }
+
+    public ArrayList<Status> getHarvestedTweetList() {
+        return (ArrayList<Status>) mHarvestedTweetList;
     }
 
     public void clearAdapter() {

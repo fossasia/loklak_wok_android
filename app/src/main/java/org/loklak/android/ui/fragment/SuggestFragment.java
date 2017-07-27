@@ -3,6 +3,7 @@ package org.loklak.android.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +48,8 @@ import static org.loklak.android.Constants.TWEET_SEARCH_SUGGESTION_QUERY_KEY;
 
 
 public class SuggestFragment extends Fragment implements SuggestAdapter.OnSuggestionClickListener {
+
+    private final String PARCELABLE_RECYCLERVIEW_STATE = "recycler_view_state";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -105,6 +108,11 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
         List<Query> queries = mRealm.copyFromRealm(queryRealmResults);
         mSuggestAdapter = new SuggestAdapter(queries, this);
         tweetSearchSuggestions.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (savedInstanceState != null) {
+            Parcelable recyclerViewState =
+                    savedInstanceState.getParcelable(PARCELABLE_RECYCLERVIEW_STATE);
+            tweetSearchSuggestions.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        }
         tweetSearchSuggestions.setAdapter(mSuggestAdapter);
 
         return rootView;
@@ -143,6 +151,14 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
                     }
                 });
         mCompositeDisposable.add(disposable);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Parcelable recyclerViewState =
+                tweetSearchSuggestions.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(PARCELABLE_RECYCLERVIEW_STATE, recyclerViewState);
     }
 
     @Override
