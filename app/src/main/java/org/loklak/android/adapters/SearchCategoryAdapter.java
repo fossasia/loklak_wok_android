@@ -48,6 +48,10 @@ public class SearchCategoryAdapter
         return mStatuses.size();
     }
 
+    public ArrayList<Status> getStatuses() {
+        return (ArrayList<Status>) mStatuses;
+    }
+
     public void setStatuses(List<Status> statuses) {
         mStatuses = statuses;
         notifyDataSetChanged();

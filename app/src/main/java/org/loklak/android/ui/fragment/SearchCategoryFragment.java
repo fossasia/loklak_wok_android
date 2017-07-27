@@ -3,6 +3,7 @@ package org.loklak.android.ui.fragment;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,8 @@ public class SearchCategoryFragment extends Fragment {
 
     private static final String TWEET_SEARCH_CATEGORY_KEY = "tweet-search-category";
     private final String LOG_TAG = SearchCategoryFragment.class.getName();
+    private final String PARCELABLE_SEARCHED_TWEETS = "searched_tweets";
+    private final String PARCELABLE_RECYCLER_VIEW_STATE = "recycler_view_state";
 
     @BindView(R.id.searched_tweet_container)
     RecyclerView recyclerView;
@@ -78,12 +81,31 @@ public class SearchCategoryFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mSearchCategoryAdapter = new SearchCategoryAdapter(getActivity(), new ArrayList<>());
-        recyclerView.setAdapter(mSearchCategoryAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (savedInstanceState != null) {
+            Parcelable recyclerViewState =
+                    savedInstanceState.getParcelable(PARCELABLE_RECYCLER_VIEW_STATE);
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+
+            List<Status> searchedTweets =
+                    savedInstanceState.getParcelableArrayList(PARCELABLE_SEARCHED_TWEETS);
+            mSearchCategoryAdapter.setStatuses(searchedTweets);
+        }
+        recyclerView.setAdapter(mSearchCategoryAdapter);
 
         fetchSearchedTweets();
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<Status> searchedTweets = mSearchCategoryAdapter.getStatuses();
+        outState.putParcelableArrayList(PARCELABLE_SEARCHED_TWEETS, searchedTweets);
+
+        Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(PARCELABLE_RECYCLER_VIEW_STATE, recyclerViewState);
     }
 
     private void fetchSearchedTweets() {
@@ -117,7 +139,7 @@ public class SearchCategoryFragment extends Fragment {
     }
 
     @OnClick(R.id.network_error)
-    public void setOnClickNetworkErrorTextViewListener(View view) {
+    public void setOnClickNetworkErrorTextViewListener() {
         networkErrorTextView.setVisibility(View.GONE);
         fetchSearchedTweets();
     }
