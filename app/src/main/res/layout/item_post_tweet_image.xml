@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/recycler_view_row_left_right_margin"
+    android:layout_marginEnd="@dimen/recycler_view_row_left_right_margin">
+
+    <ImageView
+        android:layout_width="@dimen/tweet_media_width"
+        android:layout_height="wrap_content"
+        android:id="@+id/tweet_media" />
+
+    <ImageButton
+        android:layout_width="@dimen/tweet_media_remove_side"
+        android:layout_height="@dimen/tweet_media_remove_side"
+        android:id="@+id/tweet_media_remove"
+        android:layout_alignTop="@id/tweet_media"
+        android:layout_alignEnd="@id/tweet_media"
+        android:background="@android:color/white"
+        android:src="@drawable/ic_close_black_24dp" />
+
+</RelativeLayout>

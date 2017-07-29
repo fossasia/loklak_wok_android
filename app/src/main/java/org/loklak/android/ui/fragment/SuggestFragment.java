@@ -27,6 +27,7 @@ import org.loklak.android.api.RestClient;
 import org.loklak.android.model.suggest.Query;
 import org.loklak.android.model.suggest.SuggestData;
 import org.loklak.android.ui.activity.SearchActivity;
+import org.loklak.android.ui.activity.TweetPostingActivity;
 import org.loklak.android.wok.R;
 
 import java.util.List;
@@ -176,6 +177,12 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
     public void onSuggestionClicked(Query query) {
         String searchQuery = query.getQuery();
         startSearchActivity(searchQuery);
+    }
+
+    @OnClick(R.id.tweet_post)
+    public void onClickFab() {
+        Intent intent = new Intent(getActivity(), TweetPostingActivity.class);
+        startActivity(intent);
     }
 
     private void onSuccessfulRequest(SuggestData suggestData) {

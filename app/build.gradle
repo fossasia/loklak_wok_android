@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "org.loklak.android.wok"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 25
         versionCode 1
         versionName "1.2"
@@ -37,7 +37,11 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/loklakj_lib.jar')
     compile files('libs/android-core.jar')
+
     testCompile 'junit:junit:4.12'
+    testCompile 'org.assertj:assertj-core:1.7.1'
+    testCompile 'org.mockito:mockito-core:2.8.47'
+    testCompile 'com.android.support:support-annotations:25.3.1'
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
@@ -46,9 +50,6 @@ dependencies {
 
     compile 'org.joda:joda-convert:1.8'
     compile 'joda-time:joda-time:2.9.4'
-
-    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-    compile 'oauth.signpost:signpost-core:1.2.1.2'
 
     compile 'com.google.code.gson:gson:2.8.1'
 
