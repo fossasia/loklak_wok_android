@@ -1,27 +1,79 @@
-# loklak wok for android
+# Loklak Wok for Android
 
 [![Build Status](https://travis-ci.org/fossasia/loklak_wok_android.svg?branch=master)](https://travis-ci.org/fossasia/loklak_wok_android)
+[![codecov.io](https://codecov.io/github/fossasia/loklak_wok_android/coverage.svg)](https://codecov.io/github/fossasia/loklak_wok_android)
 
-This is a message harvesting peer for the loklak_server, running on android.
+Loklak Wok Android is a message harvesting peer for the loklak_server.
 
-This app does not require any user interaction on the mobile phone. Therefore it does not need to follow
-standard android user interface guidelines. Instead, the target for the graphical interaction was, to
-show a futuristic screen as seen on head-up displays in science fiction movies. To do so, the processing.org
-graphics environment was used to create the android screens.
+Users can also search tweets from the app, the displayed tweets are latest tweets, tweets containing
+ images and videos. Along with that, the app provides tweet posting feature. Users can directly post
+ tweet from the app. Not only text, but images can also be tweeted from the app.
 
-Harvesting results are currently not displayed in such a way that they can be read by the user. This
-was not the purpose as we aim to harvest many tweets per second. The readability of the tweets was
-not a target for this app. Please therefore do not complain about this topic, it should be covered
-by a different app for a to-be-defined purpose. The purpose of this app is simply 'harvest as much as
-possible and do some blabla'.
+### Screenshots of app
+<p align="center">
+<img src="docs/images/tweet_harvesting.png" height = "480" width="270"> <img src="docs/images/tweet_search_suggestions.png" height = "480" width="270">
+<img src="docs/images/tweet_search.png" height = "480" width="270">
+</p>
 
-The code of this app is supposed to be used as boilerplate for other android applications which may
-throw away the processing graphics environment and use the loklak library to search and harvest tweets.
-If you want to use loklak wok as such a tweet-search client, just remove everything in the package
-org.loklak.android.wok. Use the class org.loklak.android.harvester.TwitterScraper to load tweets from
-twitter witout the need for an application key from twitter. Please be kind and push search results from
-such harvestings to api.loklak.org by simply calling new PushClient.push(new String[]{"http://api.loklak.org"}, timeline);
-You may also set up your own loklak server and push to that server if you like to.
+<p align="center">
+<img src="docs/images/tweet_post_authorization.png" height = "480" width="270"> <img src="docs/images/twitter_authorization_login.png" height = "480" width="270">
+<img src="docs/images/tweet_posting.png" height = "480" width="270">
+</p>
+
+## Communication
+Please join our mailing list to discuss questions regarding the project: https://groups.google.com/forum/#!forum/opntec-dev
+
+Our chat channel is on gitter here: https://gitter.im/loklak/loklak.
+
+## Development Environment Setup
+Clone the repository
+```
+$ git clone https://github.com/fossasia/loklak_wok_android.git 
+```
+Once the project is cloned successfully, import it as a **gradle project**.
+```
+File > New > Import Project > Locate build.gradle file in the cloned directory > Click OK
+```
+
+## Libraries Used
+* Retrofit [docs](http://square.github.io/retrofit/2.x/retrofit/)
+* Gson [docs](http://www.javadoc.io/doc/com.google.code.gson/gson/2.8.1)
+* ButterKnife [docs](http://jakewharton.github.io/butterknife/javadoc/)
+* RxJava [docs](http://reactivex.io/RxJava/javadoc/)
+* RxAndroid [docs](https://www.javadoc.io/doc/io.reactivex/rxandroid/1.2.1)
+* Retrolambda [Github](https://github.com/orfjackal/retrolambda)
+* LiquidCore [docs](https://liquidplayer.github.io/LiquidCoreAndroid/0.2.2/)
+* Glide [docs](http://bumptech.github.io/glide/javadocs/images/360/index.html)
+
+The project uses **lambda expressions** and **RxJava** heavily. So, if you are new to these, the 
+following resources would be helpful to get you started:
+* Lambda Expressions
+    * [Jenkov Tutorials](http://tutorials.jenkov.com/java/lambda-expressions.html) for a quick start.
+    * [Java Brains](https://www.youtube.com/playlist?list=PLqq-6Pq4lTTa9YGfyhyW2CqdtW9RtY-I3) youtube
+    series for a detail understanding.
+* RxJava
+    * [Grokking RxJava](http://blog.danlew.net/2014/09/15/grokking-rxjava-part-1/) series by Dan Lew.
+    * Code Tutplus RxJava series ([Introduction](https://code.tutsplus.com/tutorials/getting-started-with-rxjava-20-for-android--cms-28345), 
+    [Operators](https://code.tutsplus.com/tutorials/reactive-programming-operators-in-rxjava-20--cms-28396) 
+    and [Use in Android](https://code.tutsplus.com/tutorials/rxjava-for-android-apps-introducing-rxbinding-and-rxlifecycle--cms-28565)) by Jessica Thornsby.
+
+## Contributions, Bug Reports and Feature Requests
+This is an Open Source project and we would be happy to see contributors who report bugs and file 
+feature requests submitting pull requests as well. Please report issues here 
+https://github.com/fossasia/loklak_wok_android/issues.
+
+## Branch Policy
+* **master** All development goes on in this branch. If you're making a contribution, you are 
+supposed to make a pull request to master. PRs to master must pass a build check on Travis.
+* **apk** This branch contains apks, that are automatically generated on merging the latest pull request.
+
+## Code Style Guidelines
+For contributions please read the [CODESTYLE](https://source.android.com/source/code-style) carefully.
+An additional rule: Maximum 100 characters per line.
+
+Try to remove as much warnings (yellow markings on the right side of Android Studio) as possible, 
+It's not completely possible to remove all the warnings, but over a period of time, we should try to
+ make it as complete as possible.
 
 ## LICENSE
 This is licensed under LGPL 2.1. The repository also includes the file android-core.zip from processing.org
