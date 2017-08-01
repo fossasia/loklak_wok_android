@@ -19,4 +19,19 @@
 
     <!-- row_tweet_search -->
     <dimen name="profile_pic_side">48dp</dimen>
+
+    <!-- fragment_tweet_posting -->
+    <dimen name="tweet_post_edit_text_font_size">16sp</dimen>
+    <dimen name="tweet_post_button_text_font_size">16sp</dimen>
+    <dimen name="tweet_max_characters_font_size">16sp</dimen>
+    <dimen name="tweet_post_media_container_margin_bottom">4dp</dimen>
+    <dimen name="tweet_post_media_container_padding">8dp</dimen>
+    <dimen name="tweet_posting_image_button_side">40dp</dimen>
+    <dimen name="location_on_image_view_side">24dp</dimen>
+    <dimen name="location_text_font_size">16sp</dimen>
+    <dimen name="location_container_margin">8dp</dimen>
+
+    <!-- item_post_tweet_image -->
+    <dimen name="tweet_media_width">200dp</dimen>
+    <dimen name="tweet_media_remove_side">32dp</dimen>
 </resources>

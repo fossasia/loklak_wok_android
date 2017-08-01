@@ -1,0 +1,158 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.loklak.android.ui.fragment.TweetPostingFragment">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/toolbar">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:id="@+id/edit_text_container"
+        android:layout_margin="20dp"
+        android:visibility="gone">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/tweet_post_edit_text"
+            android:gravity="start"
+            android:hint="@string/tweet_post_edit_text_hint"
+            android:textSize="@dimen/tweet_post_edit_text_font_size"
+            android:inputType="textMultiLine"
+            android:background="@null"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:id="@+id/tweet_multimedia_container"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/location_text"
+            android:gravity="center"
+            android:drawableLeft="@drawable/ic_location_on_24dp"
+            android:textSize="@dimen/location_text_font_size"
+            android:layout_marginTop="@dimen/location_container_margin" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:id="@+id/divider"
+        android:background="@color/divider_color"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tweet_post_media_container"
+        android:layout_marginBottom="@dimen/tweet_post_media_container_margin_bottom"
+        android:padding="@dimen/tweet_post_media_container_padding"
+        android:visibility="gone">
+
+        <ImageButton
+            android:layout_width="@dimen/tweet_posting_image_button_side"
+            android:layout_height="@dimen/tweet_posting_image_button_side"
+            android:layout_weight="1"
+            android:id="@+id/camera"
+            android:src="@drawable/camera"
+            android:contentDescription="@string/camera_description"
+            android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:layout_width="@dimen/tweet_posting_image_button_side"
+            android:layout_height="@dimen/tweet_posting_image_button_side"
+            android:layout_weight="1"
+            android:id="@+id/gallery"
+            android:src="@drawable/ic_gallery_24dp"
+            android:contentDescription="@string/gallery_description"
+            android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:layout_width="@dimen/tweet_posting_image_button_side"
+            android:layout_height="@dimen/tweet_posting_image_button_side"
+            android:layout_weight="1"
+            android:id="@+id/location"
+            android:src="@drawable/ic_add_location_24dp"
+            android:contentDescription="@string/location_description"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:layout_width="@dimen/tweet_posting_image_button_side"
+            android:layout_height="@dimen/tweet_posting_image_button_side"
+            android:layout_weight="1"
+            android:id="@+id/tweet_size"
+            android:gravity="center"
+            android:text="@string/tweet_max_characters"
+            android:textSize="@dimen/tweet_max_characters_font_size" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tweet_post_button"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:text="@string/tweet_post_button_text"
+            android:textSize="@dimen/tweet_post_button_text_font_size"
+            android:textColor="@android:color/white"
+            android:background="@color/colorAccent" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/twitter_authorization_container">
+
+        <TextView
+            android:layout_width="@dimen/message_width"
+            android:layout_height="wrap_content"
+            android:id="@+id/twitter_authorization_message"
+            android:padding="@dimen/message_padding"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:text="@string/authorization_message"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/message_font_size" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/twitter_authorize"
+            android:layout_below="@id/twitter_authorization_message"
+            android:layout_centerHorizontal="true"
+            android:drawableStart="@drawable/twitter_pink"
+            android:text="@string/allow_loklak_wok"
+            android:textAllCaps="false" />
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/web_view"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</LinearLayout>

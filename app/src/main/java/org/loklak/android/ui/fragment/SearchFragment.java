@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 
 import org.loklak.android.adapters.SearchFragmentPagerAdapter;
 import org.loklak.android.ui.activity.SuggestActivity;
+import org.loklak.android.ui.activity.TweetPostingActivity;
 import org.loklak.android.utility.Constants;
 import org.loklak.android.wok.R;
 
@@ -78,6 +79,12 @@ public class SearchFragment extends Fragment {
     public void onStart() {
         super.onStart();
         tweetSearchEditText.setText(mQuery);
+    }
+
+    @OnClick(R.id.tweet_post)
+    public void onClickFab() {
+        Intent intent = new Intent(getActivity(), TweetPostingActivity.class);
+        startActivity(intent);
     }
 
     private void setupViewPager(ViewPager viewPager) {

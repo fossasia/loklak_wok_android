@@ -13,4 +13,22 @@
 
     <!-- fragment_search_category -->
     <string name="no_search_match">No results for \"%1$s\"</string>
+
+    <!-- fragment_tweet_posting -->
+    <!-- used in xml -->
+    <string name="tweet_post_edit_text_hint">What\'s happening?</string>
+    <string name="camera_description">Capture photo to attach in tweet</string>
+    <string name="gallery_description">Attach images from gallery in tweet</string>
+    <string name="location_description">Share your location with tweet</string>
+    <string name="tweet_post_button_text">Tweet</string>
+    <string name="tweet_max_characters">140</string>
+    <string name="location_text">%1$f\u00B0 N, %2$f\u00B0 E</string>
+    <!-- used in  TweetPostingFragment -->
+    <string name="token_error_message">Something went wrong. Please try again!</string>
+    <string name="authorization_message">Allow Loklak Wok to post your tweets.</string>
+    <string name="allow_loklak_wok">Allow Loklak Wok</string>
+    <string name="more_images_message">At most 4 images allowed!</string>
+    <string name="tweet_empty_message">Tweet can\'t be empty!</string>
+    <string name="tweet_successfully_posted">Tweet successfully posted</string>
+    <string name="tweet_posting_failed">Tweet couldn\'t be posted. Please try again!</string>
 </resources>

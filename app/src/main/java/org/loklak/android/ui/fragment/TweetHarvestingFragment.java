@@ -34,6 +34,7 @@ import org.loklak.android.model.harvest.Status;
 import org.loklak.android.model.suggest.Query;
 import org.loklak.android.model.suggest.SuggestData;
 import org.loklak.android.ui.activity.SuggestActivity;
+import org.loklak.android.ui.activity.TweetPostingActivity;
 import org.loklak.android.wok.R;
 
 import java.net.URI;
@@ -52,6 +53,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.schedulers.Schedulers;
+
+import static org.loklak.android.utility.Constants.GONE;
+import static org.loklak.android.utility.Constants.VISIBLE;
 
 public class TweetHarvestingFragment extends Fragment {
 
@@ -78,8 +82,6 @@ public class TweetHarvestingFragment extends Fragment {
             R.id.harvested__tweet_count_message,
             R.id.harvested_tweets_container})
     List<View> networkViews;
-    private final ButterKnife.Action<View> VISIBLE = (view, index) -> view.setVisibility(View.VISIBLE);
-    private final ButterKnife.Action<View> GONE = (view, index) -> view.setVisibility(View.GONE);
 
     @BindString(R.string.app_name)
     String appName;
@@ -191,6 +193,12 @@ public class TweetHarvestingFragment extends Fragment {
         networkErrorTextView.setVisibility(View.GONE);
         mSuggestionQuerries.clear();
         displayAndPostScrapedData();
+    }
+
+    @OnClick(R.id.tweet_post)
+    public void onClickFab() {
+        Intent intent = new Intent(getActivity(), TweetPostingActivity.class);
+        startActivity(intent);
     }
 
     /**

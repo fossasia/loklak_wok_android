@@ -1,0 +1,26 @@
+package org.loklak.android.ui.activity;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import org.loklak.android.ui.fragment.TweetPostingFragment;
+import org.loklak.android.wok.R;
+
+
+public class TweetPostingActivity extends AppCompatActivity {
+
+    private final String LOG_TAG = TweetPostingActivity.class.getName();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tweet_posting);
+        if (savedInstanceState == null) {
+            TweetPostingFragment tweetPostingFragment = new TweetPostingFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, tweetPostingFragment)
+                    .commit();
+        }
+    }
+}
