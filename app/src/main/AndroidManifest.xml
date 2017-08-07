@@ -51,6 +51,12 @@
             android:name="org.loklak.android.ui.activity.TweetPostingActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
 
+        <!-- TODO: uncomment the following, add API key and uncomment Fabric crashlytics kit in
+        LoklakWokApplication -->
+        <!--<meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="2f09b097bae5e7e595fe30a3a5af27abac44f107" />-->
+
     </application>
 
 </manifest>
