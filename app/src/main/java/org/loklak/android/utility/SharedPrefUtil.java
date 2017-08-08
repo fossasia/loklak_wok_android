@@ -25,4 +25,8 @@ public class SharedPrefUtil {
         editor.remove(key);
         editor.commit();
     }
+
+    public static void clearSharedPrefData(Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
+    }
 }

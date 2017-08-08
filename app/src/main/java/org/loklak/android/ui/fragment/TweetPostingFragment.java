@@ -25,11 +25,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -121,6 +125,8 @@ public class TweetPostingFragment extends Fragment {
     @BindView(R.id.location_text)
     TextView locationTextView;
 
+    @BindString(R.string.app_name)
+    String appName;
     @BindString(R.string.token_error_message)
     String tokenErrorMessage;
     @BindString(R.string.more_images_message)
@@ -164,6 +170,12 @@ public class TweetPostingFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -175,9 +187,12 @@ public class TweetPostingFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Activity activity = getActivity();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_close_24dp);
         toolbar.setNavigationOnClickListener(navIcon -> activity.onBackPressed());
+        toolbar.setTitle(appName);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
 
         mOauthToken = SharedPrefUtil.getSharedPrefString(activity, OAUTH_ACCESS_TOKEN_KEY);
         mOauthTokenSecret = SharedPrefUtil.getSharedPrefString(
@@ -185,6 +200,8 @@ public class TweetPostingFragment extends Fragment {
 
         if (mOauthToken.length() > 0 && mOauthTokenSecret.length() > 0) {
             mTweetPostingMode = true;
+            getActivity().invalidateOptionsMenu();
+
             createTwitterRestClientWithAccessTokenAndSecret(mOauthToken, mOauthTokenSecret);
 
             authorizationContainer.setVisibility(View.GONE);
@@ -220,6 +237,27 @@ public class TweetPostingFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (mTweetPostingMode) {
+            inflater.inflate(R.menu.menu_tweet_posting, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.logout:
+                SharedPrefUtil.clearSharedPrefData(getActivity());
+                getActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mCompositeDisposable = new CompositeDisposable();
@@ -240,7 +278,9 @@ public class TweetPostingFragment extends Fragment {
     @Override
     public void onStop() {
         mCompositeDisposable.dispose();
-        mLocationManager.removeUpdates(mLocationListener);
+        if (mLocationManager != null && mLocationListener != null) {
+            mLocationManager.removeUpdates(mLocationListener);
+        }
         super.onStop();
     }
 
@@ -604,7 +644,7 @@ public class TweetPostingFragment extends Fragment {
                 })
                 .flatMap(imageIds -> mTwitterApi.postTweet(status, imageIds, mLatitude, mLongitude))
                 .subscribeOn(Schedulers.io())
-                .publish();
+                    .publish();
 
         Disposable postingDisposable = observable
                 .subscribeOn(Schedulers.io())
@@ -718,6 +758,7 @@ public class TweetPostingFragment extends Fragment {
         private void setTweetPostingView() {
             authorizationContainer.setVisibility(View.GONE);
             mTweetPostingMode = true;
+            getActivity().invalidateOptionsMenu();
             ButterKnife.apply(tweetPostingViews, VISIBLE);
             locationTextView.setVisibility(View.GONE);
             displayRemainingTweetCharacters();
