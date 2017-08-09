@@ -43,13 +43,17 @@
 
         <activity
             android:name="org.loklak.android.ui.activity.SuggestActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:launchMode="singleTask"/>
 
-        <activity android:name="org.loklak.android.ui.activity.SearchActivity" />
+        <activity
+            android:name="org.loklak.android.ui.activity.SearchActivity"
+            android:launchMode="singleTask"/>
 
         <activity
             android:name="org.loklak.android.ui.activity.TweetPostingActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:launchMode="singleTask"/>
 
         <!-- TODO: uncomment the following, add API key and uncomment Fabric crashlytics kit in
         LoklakWokApplication -->
