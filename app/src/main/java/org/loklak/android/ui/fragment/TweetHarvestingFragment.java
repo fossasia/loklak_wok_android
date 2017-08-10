@@ -199,6 +199,7 @@ public class TweetHarvestingFragment extends Fragment {
     public void onClickFab() {
         Intent intent = new Intent(getActivity(), TweetPostingActivity.class);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.bottom_enter, R.anim.top_exit);
     }
 
     /**
