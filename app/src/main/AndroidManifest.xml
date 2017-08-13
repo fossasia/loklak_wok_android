@@ -16,7 +16,7 @@
     <application
         android:name="org.loklak.android.LoklakWokApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <service
@@ -33,13 +33,17 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
-        <activity android:name="org.loklak.android.ui.activity.TweetHarvestingActivity">
+        <activity
+            android:name="org.loklak.android.ui.activity.SplashActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="org.loklak.android.ui.activity.TweetHarvestingActivity"/>
 
         <activity
             android:name="org.loklak.android.ui.activity.SuggestActivity"
@@ -59,7 +63,7 @@
         LoklakWokApplication -->
         <!--<meta-data
             android:name="io.fabric.ApiKey"
-            android:value="2f09b097bae5e7e595fe30a3a5af27abac44f107" />-->
+            android:value="API_KEY" />-->
 
     </application>
 
