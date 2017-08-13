@@ -75,6 +75,7 @@
             android:layout_height="@dimen/tweet_posting_image_button_side"
             android:layout_weight="1"
             android:id="@+id/camera"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/camera"
             android:contentDescription="@string/camera_description"
             android:background="@drawable/media_button_selector" />
@@ -84,6 +85,7 @@
             android:layout_height="@dimen/tweet_posting_image_button_side"
             android:layout_weight="1"
             android:id="@+id/gallery"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_gallery_24dp"
             android:contentDescription="@string/gallery_description"
             android:background="@drawable/media_button_selector" />
@@ -93,24 +95,25 @@
             android:layout_height="@dimen/tweet_posting_image_button_side"
             android:layout_weight="1"
             android:id="@+id/location"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_add_location_24dp"
             android:contentDescription="@string/location_description"
             android:background="@drawable/media_button_selector" />
 
         <TextView
-            android:layout_width="@dimen/tweet_posting_image_button_side"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/tweet_posting_image_button_side"
             android:layout_weight="1"
             android:id="@+id/tweet_size"
-            android:gravity="center"
+            android:gravity="center|left"
             android:text="@string/tweet_max_characters"
             android:textSize="@dimen/tweet_max_characters_font_size" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/tweet_posting_image_button_side"
+            android:layout_height="@dimen/tweet_posting_image_button_side"
             android:id="@+id/tweet_post_button"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:textAllCaps="false"
             android:text="@string/tweet_post_button_text"
             android:textSize="@dimen/tweet_post_button_text_font_size"

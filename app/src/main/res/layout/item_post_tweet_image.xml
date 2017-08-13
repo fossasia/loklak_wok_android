@@ -7,8 +7,10 @@
     android:layout_marginEnd="@dimen/recycler_view_row_left_right_margin">
 
     <ImageView
-        android:layout_width="@dimen/tweet_media_width"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/tweet_media_height"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:id="@+id/tweet_media" />
 
     <ImageButton
@@ -17,7 +19,9 @@
         android:id="@+id/tweet_media_remove"
         android:layout_alignTop="@id/tweet_media"
         android:layout_alignEnd="@id/tweet_media"
-        android:background="@android:color/white"
-        android:src="@drawable/ic_close_black_24dp" />
+        android:layout_marginEnd="@dimen/tweet_media_remove_margin"
+        android:layout_marginTop="@dimen/tweet_media_remove_margin"
+        android:background="@drawable/shape_round_corner_tweet_media_remove"
+        android:src="@drawable/ic_close_white" />
 
 </RelativeLayout>
