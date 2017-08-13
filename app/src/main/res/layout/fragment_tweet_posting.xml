@@ -77,7 +77,7 @@
             android:id="@+id/camera"
             android:src="@drawable/camera"
             android:contentDescription="@string/camera_description"
-            android:background="@android:color/transparent" />
+            android:background="@drawable/media_button_selector" />
 
         <ImageButton
             android:layout_width="@dimen/tweet_posting_image_button_side"
@@ -86,7 +86,7 @@
             android:id="@+id/gallery"
             android:src="@drawable/ic_gallery_24dp"
             android:contentDescription="@string/gallery_description"
-            android:background="@android:color/transparent" />
+            android:background="@drawable/media_button_selector" />
 
         <ImageButton
             android:layout_width="@dimen/tweet_posting_image_button_side"
@@ -95,7 +95,7 @@
             android:id="@+id/location"
             android:src="@drawable/ic_add_location_24dp"
             android:contentDescription="@string/location_description"
-            android:background="@android:color/transparent" />
+            android:background="@drawable/media_button_selector" />
 
         <TextView
             android:layout_width="@dimen/tweet_posting_image_button_side"
@@ -115,7 +115,7 @@
             android:text="@string/tweet_post_button_text"
             android:textSize="@dimen/tweet_post_button_text_font_size"
             android:textColor="@android:color/white"
-            android:background="@color/colorAccent" />
+            android:background="@drawable/tweet_button_selector" />
 
     </LinearLayout>
 
