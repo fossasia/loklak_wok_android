@@ -105,6 +105,9 @@ public class TweetPostingFragment extends Fragment {
     private final int GALLERY_PERMISSION = 200;
     private final int REQUEST_GALLERY_MEDIA_SELECTION = 201;
     private final int LOCATION_PERMISSION = 300;
+    private final String PARCELABLE_LONGITUDE = "longitude";
+    private final String PARCELABLE_LATITUDE = "latitude";
+    private static final String PARCELABLE_IMAGE_PATH_LIST = "image_path_list";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -198,6 +201,8 @@ public class TweetPostingFragment extends Fragment {
         mOauthTokenSecret = SharedPrefUtil.getSharedPrefString(
                 activity, OAUTH_ACCESS_TOKEN_SECRET_KEY);
 
+        List<String> imagePathList = new ArrayList<>();
+
         if (mOauthToken.length() > 0 && mOauthTokenSecret.length() > 0) {
             mTweetPostingMode = true;
             getActivity().invalidateOptionsMenu();
@@ -207,6 +212,23 @@ public class TweetPostingFragment extends Fragment {
             authorizationContainer.setVisibility(View.GONE);
             ButterKnife.apply(tweetPostingViews, VISIBLE);
             locationTextView.setVisibility(View.GONE);
+
+            if (savedInstanceState != null) {
+                mLatitude = savedInstanceState.getDouble(PARCELABLE_LATITUDE);
+                mLongitude = savedInstanceState.getDouble(PARCELABLE_LONGITUDE);
+                if (mLatitude != 0.0 && mLongitude != 0.0) {
+                    setLocation();
+                    locationTextView.setVisibility(View.VISIBLE);
+                }
+
+                imagePathList = savedInstanceState.getStringArrayList(PARCELABLE_IMAGE_PATH_LIST);
+                if (imagePathList == null) {
+                    imagePathList = new ArrayList<>();
+                    tweetMultimediaContainer.setVisibility(View.GONE);
+                } else {
+                    tweetMultimediaContainer.setVisibility(View.VISIBLE);
+                }
+            }
         } else {
             mTwitterApi = TwitterRestClient.createTwitterAPIWithoutAccessToken();
             webView.getSettings().setJavaScriptEnabled(true);
@@ -222,7 +244,7 @@ public class TweetPostingFragment extends Fragment {
             displayRemainingTweetCharacters();
         });
 
-        mTweetMediaAdapter = new PostTweetMediaAdapter(getContext(), new ArrayList<>());
+        mTweetMediaAdapter = new PostTweetMediaAdapter(getContext(), imagePathList);
         tweetMultimediaContainer.setAdapter(mTweetMediaAdapter);
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -272,6 +294,18 @@ public class TweetPostingFragment extends Fragment {
                         tweetSizeTextView.setText(String.valueOf(charRemaining));
                     });
             mCompositeDisposable.add(disposable);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mLatitude != null && mLongitude != null) {
+            outState.putDouble(PARCELABLE_LATITUDE, mLatitude);
+            outState.putDouble(PARCELABLE_LONGITUDE, mLongitude);
+        }
+        if (mTweetMediaAdapter.getItemCount() > 0) {
+            ArrayList<String> imagePathList = mTweetMediaAdapter.getImagePathList();
+            outState.putStringArrayList(PARCELABLE_IMAGE_PATH_LIST, imagePathList);
         }
     }
 
@@ -453,9 +487,9 @@ public class TweetPostingFragment extends Fragment {
 
     private void onSuccessfulCameraActivityResult() {
         tweetMultimediaContainer.setVisibility(View.VISIBLE);
-        Bitmap bitmap = BitmapFactory.decodeFile(mCapturedPhotoFile.getAbsolutePath());
+        String capturedFilePath = mCapturedPhotoFile.getAbsolutePath();
         mTweetMediaAdapter.clearAdapter();
-        mTweetMediaAdapter.addBitmap(bitmap);
+        mTweetMediaAdapter.addImagePath(capturedFilePath);
     }
 
     private void onSuccessfulGalleryActivityResult(Intent intent) {
@@ -484,21 +518,21 @@ public class TweetPostingFragment extends Fragment {
         }
 
         // get bitmap from uris of images
-        List<Bitmap> bitmaps = new ArrayList<>();
+        List<String> imagePaths = new ArrayList<>();
         for (Uri uri : uris) {
             String filePath = FileUtils.getPath(context, uri);
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            bitmaps.add(bitmap);
+            imagePaths.add(filePath);
         }
 
         // display images in RecyclerView
-        mTweetMediaAdapter.setBitmapList(bitmaps);
+        mTweetMediaAdapter.setImagePathList(imagePaths);
     }
 
-    private Observable<String> getImageId(Bitmap bitmap) {
+    private Observable<String> getImageId(String imagePath) {
         return Observable
                 .defer(() -> {
                     // convert bitmap to bytes
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                     byte[] bytes = byteArrayOutputStream.toByteArray();
@@ -514,10 +548,10 @@ public class TweetPostingFragment extends Fragment {
     public void onClickTweetPostButton() {
         String status = tweetPostEditText.getText().toString();
 
-        List<Bitmap> bitmaps = mTweetMediaAdapter.getBitmapList();
+        List<String> imagePathList = mTweetMediaAdapter.getImagePathList();
         List<Observable<String>> mediaIdObservables = new ArrayList<>();
-        for (Bitmap bitmap : bitmaps) {
-            mediaIdObservables.add(getImageId(bitmap));
+        for (String imagePath : imagePathList) {
+            mediaIdObservables.add(getImageId(imagePath));
         }
 
         if (mediaIdObservables.size() > 0) {

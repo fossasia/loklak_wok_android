@@ -23,4 +23,10 @@ public class TweetPostingActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.back_button_top_enter, R.anim.back_button_bottom_exit);
+    }
 }

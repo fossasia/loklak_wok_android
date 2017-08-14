@@ -183,6 +183,7 @@ public class SuggestFragment extends Fragment implements SuggestAdapter.OnSugges
     public void onClickFab() {
         Intent intent = new Intent(getActivity(), TweetPostingActivity.class);
         startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.bottom_enter, R.anim.top_exit);
     }
 
     private void onSuccessfulRequest(SuggestData suggestData) {

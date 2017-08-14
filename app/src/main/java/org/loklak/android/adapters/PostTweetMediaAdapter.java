@@ -2,6 +2,7 @@ package org.loklak.android.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +26,11 @@ public class PostTweetMediaAdapter
     private final String LOG_TAG = PostTweetMediaAdapter.class.getName();
 
     private Context mContext;
-    private List<Bitmap> mBitmapList = new ArrayList<>();
+    private List<String> mImagePathList = new ArrayList<>();
 
-    public PostTweetMediaAdapter(Context context, List<Bitmap> files) {
+    public PostTweetMediaAdapter(Context context, List<String> imagePaths) {
         this.mContext = context;
-        this.mBitmapList = files;
+        this.mImagePathList = imagePaths;
     }
 
     @Override
@@ -41,30 +42,30 @@ public class PostTweetMediaAdapter
 
     @Override
     public void onBindViewHolder(PostTweetMediaViewHolder holder, int position) {
-        holder.bind(mBitmapList.get(position));
+        holder.bind(mImagePathList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mBitmapList.size();
+        return mImagePathList.size();
     }
 
-    public List<Bitmap> getBitmapList() {
-        return mBitmapList;
+    public ArrayList<String> getImagePathList() {
+        return (ArrayList<String>) mImagePathList;
     }
 
-    public void setBitmapList(List<Bitmap> bitmaps) {
-        this.mBitmapList = bitmaps;
+    public void setImagePathList(List<String> imagePaths) {
+        this.mImagePathList = imagePaths;
         notifyDataSetChanged();
     }
 
-    public void addBitmap(Bitmap bitmap) {
-        mBitmapList.add(bitmap);
+    public void addImagePath(String imagePath) {
+        mImagePathList.add(imagePath);
         notifyDataSetChanged();
     }
 
     public void clearAdapter() {
-        mBitmapList.clear();
+        mImagePathList.clear();
         notifyDataSetChanged();
     }
 
@@ -77,19 +78,20 @@ public class PostTweetMediaAdapter
         @BindView(R.id.tweet_media_remove)
         ImageButton tweetMediaRemove;
 
-        public PostTweetMediaViewHolder(View itemView) {
+        PostTweetMediaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(Bitmap bitmap) {
+        void bind(String imagePath) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             tweetMedia.setImageBitmap(bitmap);
         }
 
         @OnClick(R.id.tweet_media_remove)
         public void onClickTweetMediaRemove() {
             int position = getAdapterPosition();
-            mBitmapList.remove(position);
+            mImagePathList.remove(position);
             notifyItemRemoved(position);
         }
     }
