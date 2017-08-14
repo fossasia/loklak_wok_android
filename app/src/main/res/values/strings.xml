@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Loklak wok</string>
+    <string name="app_name">Loklak Wok</string>
     <string name="network_error_retry">Please check your internet connection. Tap here to try again!</string>
     <string name="tweet_search_edit_text_hint">Search Twitter</string>
     <string name="clear_image_desc">Clears Search EditText for a new search</string>
