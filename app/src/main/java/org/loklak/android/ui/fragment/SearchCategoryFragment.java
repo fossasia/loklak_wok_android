@@ -28,6 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -108,12 +109,8 @@ public class SearchCategoryFragment extends Fragment {
         outState.putParcelable(PARCELABLE_RECYCLER_VIEW_STATE, recyclerViewState);
     }
 
-    private void fetchSearchedTweets() {
-        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
-        loklakApi.getSearchedTweets(mSearchQuery, mTweetSearchCategory, 30)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::setSearchResultView, this::setNetworkErrorView);
+    private boolean hasWebsiteImagePreview(Status status) {
+
     }
 
     private void setSearchResultView(Search search) {
@@ -130,6 +127,15 @@ public class SearchCategoryFragment extends Fragment {
             recyclerView.setVisibility(View.VISIBLE);
             mSearchCategoryAdapter.setStatuses(statusList);
         }
+    }
+
+    private void fetchSearchedTweets() {
+        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
+        loklakApi.getSearchedTweets(mSearchQuery, mTweetSearchCategory, 30)
+                .flatMap(search -> Observable.fromIterable(search.getStatuses()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::setSearchResultView, this::setNetworkErrorView);
     }
 
     private void setNetworkErrorView(Throwable throwable) {

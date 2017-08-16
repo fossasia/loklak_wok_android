@@ -10,6 +10,10 @@ public class Search {
     private List<Status> mStatuses = null;
     private List<String> aggregations;
 
+    public void setStatuses(List<Status> statuses) {
+        this.mStatuses = statuses;
+    }
+
     public List<Status> getStatuses() {
         return mStatuses;
     }
