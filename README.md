@@ -76,7 +76,4 @@ It's not completely possible to remove all the warnings, but over a period of ti
  make it as complete as possible.
 
 ## LICENSE
-This is licensed under LGPL 2.1. The repository also includes the file android-core.zip from processing.org
-(which is licensed by the LGPL as well, see https://github.com/processing/processing/wiki/FAQ) and the file
-"DroidSansMono.ttf" (which is licensed by the Apache License, see https://www.google.com/fonts/attribution)
-That means, this is free software!
+This is licensed under LGPL 2.1.

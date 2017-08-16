@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.loklak.android.ui.activity.SplashActivity">
+    tools:context="org.loklak.wok.ui.activity.SplashActivity">
 
     <ImageView
         android:layout_width="320dp"

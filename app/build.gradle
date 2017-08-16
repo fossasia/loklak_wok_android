@@ -14,11 +14,11 @@ android {
     buildToolsVersion "25.0.3"
 
     defaultConfig {
-        applicationId "org.loklak.android.wok"
+        applicationId "org.loklak.wok"
         minSdkVersion 18
         targetSdkVersion 25
         versionCode 1
-        versionName "1.2"
+        versionName "1"
     }
     buildTypes {
         release {
@@ -41,8 +41,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/loklakj_lib.jar')
-    compile files('libs/android-core.jar')
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.1'
