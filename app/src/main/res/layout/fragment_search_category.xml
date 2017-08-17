@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.loklak.android.ui.fragment.SearchCategoryFragment">
+    tools:context="org.loklak.wok.ui.fragment.SearchCategoryFragment">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.loklak.android.ui.activity.TweetPostingActivity">
+    tools:context="org.loklak.wok.ui.activity.TweetPostingActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
