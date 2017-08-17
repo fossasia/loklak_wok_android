@@ -3,8 +3,12 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#C2185B</color>
     <color name="colorAccent">#E91E63</color>
+    <color name="colorAccentLight">#F48FB1</color>
     <color name="secondary_text_material_light">#757575</color>
 
     <!-- Divider color -->
     <color name="divider_color">#BDBDBD</color>
+
+    <!-- Touch selector color -->
+    <color name="media_button_touch_selector_backgroud">#BDBDBD</color>
 </resources>
