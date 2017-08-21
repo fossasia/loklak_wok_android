@@ -32,6 +32,7 @@
     <dimen name="location_container_margin">8dp</dimen>
 
     <!-- item_post_tweet_image -->
-    <dimen name="tweet_media_width">200dp</dimen>
-    <dimen name="tweet_media_remove_side">32dp</dimen>
+    <dimen name="tweet_media_height">280dp</dimen>
+    <dimen name="tweet_media_remove_side">24dp</dimen>
+    <dimen name="tweet_media_remove_margin">8dp</dimen>
 </resources>

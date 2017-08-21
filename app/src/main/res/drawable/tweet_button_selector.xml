@@ -5,5 +5,5 @@
     <item android:drawable="@color/colorAccentLight" android:state_activated="true"/>
     <item android:drawable="@color/colorAccentLight" android:state_selected="true"/>
 
-    <item android:drawable="@color/colorAccent"/>
+    <item android:drawable="@drawable/shape_round_corner_tweet_post"/>
 </selector>
