@@ -22,16 +22,25 @@ android:
   - build-tools-25.0.3
   - tools
   - android-25
+  - android-22
   - addon-google_apis-google-25
   - extra-google-m2repository
   - extra-android-m2repository
   - android-sdk-license-.+
 
+  # system images for emulator
+  - sys-img-armeabi-v7a-android-22
+
 before_script:
   - chmod +x gradlew
+  - echo no | android create avd --force --name test --target android-22 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
 
 script:
-  - ./gradlew build jacocoTestReport
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+  - ./gradlew connectedCheck test jacocoTestReport
+  - ./gradlew build
   - ./gradlew assembleRelease
   # Success or not if a pull request is merged the apk should be updated if it can be build
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./update-apk.sh; fi'

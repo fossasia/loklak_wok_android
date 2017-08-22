@@ -34,6 +34,10 @@ public class Query extends RealmObject {
         mQueryFirst = "";
     }
 
+    public void setQuery(String query) {
+        this.mQuery = query;
+    }
+
     public String getQuery() {
         return mQuery;
     }

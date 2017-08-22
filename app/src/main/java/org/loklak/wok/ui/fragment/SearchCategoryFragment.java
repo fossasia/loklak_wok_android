@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.loklak.wok.adapters.SearchCategoryAdapter;
-import org.loklak.wok.api.LoklakApi;
-import org.loklak.wok.api.RestClient;
+import org.loklak.wok.api.loklak.LoklakAPI;
+import org.loklak.wok.api.loklak.RestClient;
 import org.loklak.wok.model.search.Search;
 import org.loklak.wok.model.search.Status;
 import org.loklak.wok.utility.Constants;
@@ -115,8 +115,8 @@ public class SearchCategoryFragment extends Fragment {
 
     private void fetchSearchedTweets() {
         progressBar.setVisibility(View.VISIBLE);
-        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
-        loklakApi.getSearchedTweets(mSearchQuery, mTweetSearchCategory, 30)
+        LoklakAPI loklakAPI = RestClient.createApi(LoklakAPI.class);
+        loklakAPI.getSearchedTweets(mSearchQuery, mTweetSearchCategory, 30)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setSearchResultView, this::setNetworkErrorView);

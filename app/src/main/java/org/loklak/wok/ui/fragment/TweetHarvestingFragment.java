@@ -27,14 +27,14 @@ import org.liquidplayer.service.MicroService;
 import org.liquidplayer.service.MicroService.EventListener;
 import org.loklak.wok.Utility;
 import org.loklak.wok.adapters.HarvestedTweetAdapter;
-import org.loklak.wok.api.LoklakApi;
-import org.loklak.wok.api.RestClient;
+import org.loklak.wok.api.loklak.LoklakAPI;
+import org.loklak.wok.api.loklak.RestClient;
 import org.loklak.wok.model.harvest.Push;
 import org.loklak.wok.model.harvest.ScrapedData;
 import org.loklak.wok.model.harvest.Status;
 import org.loklak.wok.model.suggest.Query;
 import org.loklak.wok.model.suggest.SuggestData;
-import org.loklak.wok.ui.activity.SuggestActivity;
+import org.loklak.wok.ui.suggestion.SuggestActivity;
 import org.loklak.wok.ui.activity.TweetPostingActivity;
 import org.loklak.wok.R;
 
@@ -211,8 +211,8 @@ public class TweetHarvestingFragment extends Fragment {
      * @return A string Observable that can be used to scrape tweets.
      */
     private Observable<String> fetchSuggestions() {
-        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
-        Observable<SuggestData> observable = loklakApi.getSuggestions("", 2);
+        LoklakAPI loklakAPI = RestClient.createApi(LoklakAPI.class);
+        Observable<SuggestData> observable = loklakAPI.getSuggestions("", 2);
         return observable.flatMap(suggestData -> {
             List<Query> queryList = suggestData.getQueries();
             List<String> queries = new ArrayList<>();
@@ -293,13 +293,13 @@ public class TweetHarvestingFragment extends Fragment {
     }
 
     private Observable<Push> pushScrapedData(ScrapedData scrapedData) throws Exception {
-        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
+        LoklakAPI loklakAPI = RestClient.createApi(LoklakAPI.class);
         List<Status> statuses = scrapedData.getStatuses();
         String data = mGson.toJson(statuses);
         JSONArray jsonArray = new JSONArray(data);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("statuses", jsonArray);
-        return loklakApi.pushTweetsToLoklak(jsonObject.toString());
+        return loklakAPI.pushTweetsToLoklak(jsonObject.toString());
     }
 
     private void displayAndPostScrapedData() {

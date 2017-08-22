@@ -7,6 +7,8 @@ import butterknife.ButterKnife.Action;
 
 public class Constants {
 
+    public static final String BASE_URL_LOKLAK = "https://api.loklak.org/";
+
     public static final String KEY = "";
     public static final String SECRET = "";
 

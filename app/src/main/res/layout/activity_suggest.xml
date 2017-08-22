@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.loklak.wok.ui.activity.SuggestActivity">
+    tools:context="org.loklak.wok.ui.suggestion.SuggestActivity">
 
     <FrameLayout
         android:layout_width="match_parent"

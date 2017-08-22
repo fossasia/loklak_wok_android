@@ -1,9 +1,9 @@
-package org.loklak.wok.ui.activity;
+package org.loklak.wok.ui.suggestion;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import org.loklak.wok.ui.fragment.SuggestFragment;
+import org.loklak.wok.ui.suggestion.SuggestFragment;
 import org.loklak.wok.R;
 
 public class SuggestActivity extends AppCompatActivity {
