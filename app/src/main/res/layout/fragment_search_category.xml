@@ -5,10 +5,17 @@
     android:layout_height="match_parent"
     tools:context="org.loklak.wok.ui.fragment.SearchCategoryFragment">
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_bar"
+        android:layout_centerInParent="true" />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/searched_tweet_container" />
+        android:id="@+id/searched_tweet_container"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="@dimen/message_width"
