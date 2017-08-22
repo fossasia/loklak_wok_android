@@ -38,12 +38,25 @@
         android:text="@string/count_message"
         android:textSize="@dimen/message_font_size"/>
 
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/harvested_tweets_container"
-        android:layout_below="@id/harvested__tweet_count_message"
-        android:layout_marginTop="@dimen/tweet_harvesting_margin"/>
+        android:layout_below="@id/harvested__tweet_count_message">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/harvested_tweets_container"
+            android:layout_marginTop="@dimen/tweet_harvesting_margin"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="@dimen/message_width"

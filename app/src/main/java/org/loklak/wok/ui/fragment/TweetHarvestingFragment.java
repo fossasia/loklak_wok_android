@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -74,6 +75,8 @@ public class TweetHarvestingFragment extends Fragment {
     TextView harvestedTweetsCountTextView;
     @BindView(R.id.harvested_tweets_container)
     RecyclerView recyclerView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
     @BindView(R.id.network_error)
     TextView networkErrorTextView;
 
@@ -166,6 +169,7 @@ public class TweetHarvestingFragment extends Fragment {
         super.onStart();
         mSuggestionQuerries.clear();
         mCompositeDisposable = new CompositeDisposable();
+        recyclerView.setVisibility(View.GONE);
         displayAndPostScrapedData();
     }
 
@@ -268,6 +272,8 @@ public class TweetHarvestingFragment extends Fragment {
     }
 
     private void displayScrapedData(ScrapedData scrapedData) {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
         String query = scrapedData.getQuery();
         List<Status> statuses = scrapedData.getStatuses();
         mSuggestionQuerries.remove(query);
@@ -282,6 +288,7 @@ public class TweetHarvestingFragment extends Fragment {
     private void setNetworkErrorView(Throwable throwable) {
         Log.e(LOG_TAG, throwable.toString());
         ButterKnife.apply(networkViews, GONE);
+        progressBar.setVisibility(View.GONE);
         networkErrorTextView.setVisibility(View.VISIBLE);
     }
 
@@ -296,6 +303,7 @@ public class TweetHarvestingFragment extends Fragment {
     }
 
     private void displayAndPostScrapedData() {
+        progressBar.setVisibility(View.VISIBLE);
         ConnectableObservable<ScrapedData> observable = Observable.interval(4, TimeUnit.SECONDS)
                 .flatMap(this::getSuggestionsPeriodically)
                 .flatMap(query -> {

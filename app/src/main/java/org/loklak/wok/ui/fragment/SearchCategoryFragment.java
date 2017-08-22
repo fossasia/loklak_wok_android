@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.loklak.wok.adapters.SearchCategoryAdapter;
@@ -40,6 +41,8 @@ public class SearchCategoryFragment extends Fragment {
 
     @BindView(R.id.searched_tweet_container)
     RecyclerView recyclerView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
     @BindView(R.id.no_search_result_found)
     TextView noSearchResultFoundTextView;
     @BindView(R.id.network_error)
@@ -90,10 +93,12 @@ public class SearchCategoryFragment extends Fragment {
             List<Status> searchedTweets =
                     savedInstanceState.getParcelableArrayList(PARCELABLE_SEARCHED_TWEETS);
             mSearchCategoryAdapter.setStatuses(searchedTweets);
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        } else {
+            fetchSearchedTweets();
         }
         recyclerView.setAdapter(mSearchCategoryAdapter);
-
-        fetchSearchedTweets();
 
         return view;
     }
@@ -109,6 +114,7 @@ public class SearchCategoryFragment extends Fragment {
     }
 
     private void fetchSearchedTweets() {
+        progressBar.setVisibility(View.VISIBLE);
         LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
         loklakApi.getSearchedTweets(mSearchQuery, mTweetSearchCategory, 30)
                 .subscribeOn(Schedulers.io())
@@ -119,6 +125,7 @@ public class SearchCategoryFragment extends Fragment {
     private void setSearchResultView(Search search) {
         List<Status> statusList = search.getStatuses();
         networkErrorTextView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         if (statusList.size() == 0) {
             recyclerView.setVisibility(View.GONE);
 
@@ -134,6 +141,7 @@ public class SearchCategoryFragment extends Fragment {
 
     private void setNetworkErrorView(Throwable throwable) {
         Log.e(LOG_TAG, throwable.toString());
+        progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         networkErrorTextView.setVisibility(View.VISIBLE);
     }
