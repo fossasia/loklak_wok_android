@@ -10,15 +10,18 @@ Users can also search tweets from the app, the displayed tweets are latest tweet
  tweet from the app. Not only text, but images can also be tweeted from the app.
 
 ### Screenshots of app
-<p align="center">
-<img src="docs/images/tweet_harvesting.png" height = "480" width="270"> <img src="docs/images/tweet_search_suggestions.png" height = "480" width="270">
-<img src="docs/images/tweet_search.png" height = "480" width="270">
-</p>
 
-<p align="center">
-<img src="docs/images/tweet_post_authorization.png" height = "480" width="270"> <img src="docs/images/twitter_authorization_login.png" height = "480" width="270">
-<img src="docs/images/tweet_posting.png" height = "480" width="270">
-</p>
+<table>
+  <tr>
+    <td><img src="docs/_static/tweet_harvesting.png" height = "480" width="270"></td>
+    <td><img src="docs/_static/tweet_search_suggestions.png" height = "480" width="270"></td>
+    <td><img src="docs/_static/tweet_search.png" height = "480" width="270"></td>
+  <tr>
+    <td><img src="docs/_static/tweet_post_authorization.png" height = "480" width="270"></td>
+    <td><img src="docs/_static/twitter_authorization_login.png" height = "480" width="270"></td>
+    <td><img src="docs/_static/tweet_posting.png" height = "480" width="270"></td>
+  </tr>
+</table>
 
 ## Communication
 Please join our mailing list to discuss questions regarding the project: https://groups.google.com/forum/#!forum/opntec-dev
