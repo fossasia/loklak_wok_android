@@ -2,11 +2,18 @@ package org.loklak.wok;
 
 import android.app.Application;
 
+import org.loklak.wok.inject.ApplicationComponent;
+import org.loklak.wok.inject.DaggerApplicationComponent;
+import org.loklak.wok.inject.ApplicationModule;
+import org.loklak.wok.utility.Constants;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 
 public class LoklakWokApplication extends Application {
+
+    private ApplicationComponent mApplicationComponent;
 
     @Override
     public void onCreate() {
@@ -20,6 +27,14 @@ public class LoklakWokApplication extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
+
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(Constants.BASE_URL_LOKLAK))
+                .build();
+    }
+
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
     }
 
     @Override

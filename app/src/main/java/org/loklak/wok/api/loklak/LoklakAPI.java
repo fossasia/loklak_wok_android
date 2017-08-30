@@ -1,4 +1,4 @@
-package org.loklak.wok.api;
+package org.loklak.wok.api.loklak;
 
 import org.loklak.wok.model.harvest.Push;
 import org.loklak.wok.model.search.Search;
@@ -12,7 +12,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 
-public interface LoklakApi {
+public interface LoklakAPI {
 
     @GET("/api/suggest.json")
     Observable<SuggestData> getSuggestions(@Query("q") String query);

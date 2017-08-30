@@ -1,4 +1,4 @@
-package org.loklak.wok.api;
+package org.loklak.wok.api.loklak;
 
 import com.google.gson.Gson;
 

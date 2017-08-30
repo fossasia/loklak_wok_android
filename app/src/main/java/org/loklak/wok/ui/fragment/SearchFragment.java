@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import org.loklak.wok.adapters.SearchFragmentPagerAdapter;
-import org.loklak.wok.ui.activity.SuggestActivity;
+import org.loklak.wok.ui.suggestion.SuggestActivity;
 import org.loklak.wok.ui.activity.TweetPostingActivity;
 import org.loklak.wok.utility.Constants;
 import org.loklak.wok.R;

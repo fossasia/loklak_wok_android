@@ -43,7 +43,7 @@
         <activity android:name="org.loklak.wok.ui.activity.TweetHarvestingActivity"/>
 
         <activity
-            android:name="org.loklak.wok.ui.activity.SuggestActivity"
+            android:name="org.loklak.wok.ui.suggestion.SuggestActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:launchMode="singleTask"/>
 

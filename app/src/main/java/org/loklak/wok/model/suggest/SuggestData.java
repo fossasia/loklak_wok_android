@@ -8,6 +8,10 @@ public class SuggestData {
     private SearchMetadata mSearchMetadata;
     private List<Query> mQueries;
 
+    public void setQueries(List<Query> queries) {
+        this.mQueries = queries;
+    }
+
     public SearchMetadata getSearchMetadata() {
         return mSearchMetadata;
     }

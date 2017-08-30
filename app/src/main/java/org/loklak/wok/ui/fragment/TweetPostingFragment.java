@@ -54,8 +54,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.loklak.wok.Utility;
 import org.loklak.wok.adapters.PostTweetMediaAdapter;
-import org.loklak.wok.api.LoklakApi;
-import org.loklak.wok.api.RestClient;
+import org.loklak.wok.api.loklak.LoklakAPI;
+import org.loklak.wok.api.loklak.RestClient;
 import org.loklak.wok.api.twitter.TwitterAPI;
 import org.loklak.wok.api.twitter.TwitterMediaAPI;
 import org.loklak.wok.api.twitter.TwitterMediaRestClient;
@@ -640,8 +640,8 @@ public class TweetPostingFragment extends Fragment {
 
     private Observable<Push> pushTweetToLoklak(StatusUpdate statusUpdate) throws JSONException {
         String data = convertPostedTweetToJSON(statusUpdate).toString();
-        LoklakApi loklakApi = RestClient.createApi(LoklakApi.class);
-        return loklakApi.pushTweetsToLoklak(data);
+        LoklakAPI loklakAPI = RestClient.createApi(LoklakAPI.class);
+        return loklakAPI.pushTweetsToLoklak(data);
     }
 
     private void postTextOnlyTweet(String status) {
