@@ -42,6 +42,7 @@ script:
   - ./gradlew connectedCheck test jacocoTestReport
   - ./gradlew build
   - ./gradlew assembleRelease
+  - bash scripts/prep-key.sh
   # Success or not if a pull request is merged the apk should be updated if it can be build
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./update-apk.sh; fi'
 
