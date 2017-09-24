@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+export PUBLISH_BRANCH=${PUBLISH_BRANCH:-master}
+
+# Signing Apps
+if [ "$TRAVIS_BRANCH" == "$PUBLISH_BRANCH" ]; then
+    echo "Push to master branch detected, signing the app..."
+    cp ./app/build/outputs/apk/app-release-unsigned.apk ./app/build/outputs/apk/app-release-unaligned.apk
+    jarsigner -verbose -tsa http://timestamp.comodoca.com/rfc3161 -sigalg SHA1withRSA -digestalg SHA1 -keystore scripts/key.jks -storepass $STORE_PASS -keypass $KEY_PASS ./app/build/outputs/apk/app-release-unaligned.apk $ALIAS
+    ${ANDROID_HOME}/build-tools/25.0.3/zipalign -v -p 4 ./app/build/outputs/apk/app-release-unaligned.apk ./app/build/outputs/apk/app-release.apk
+
+    # Publishing App
+    echo "Publishing app to Play Store..."
+    gem install fastlane
+    fastlane supply --apk ./app/build/outputs/apk/app-release.apk --track alpha --json_key scripts/fastlane.json --package_name $PACKAGE_NAME
+fi
+
 # Create a new folder and copy the builded apk to there
 mkdir $HOME/work_new
 cp -rf ./app/build/outputs/apk/ $HOME/work_new
