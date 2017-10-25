@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -17,61 +16,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/harvested_tweets_count"
-        android:layout_below="@id/app_bar_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/tweet_harvesting_margin"
-        android:text="@string/zero_tweets"
-        android:textSize="@dimen/tweets_harvested_count"
-        android:fontFamily="sans-serif-condensed"
-        android:textColor="@android:color/black"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/harvested__tweet_count_message"
-        android:layout_below="@id/harvested_tweets_count"
-        android:layout_centerHorizontal="true"
-        android:text="@string/count_message"
-        android:textSize="@dimen/message_font_size"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/harvested__tweet_count_message">
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/harvested_tweets_container"
-            android:layout_marginTop="@dimen/tweet_harvesting_margin"
-            android:visibility="gone"/>
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="@dimen/message_width"
-        android:layout_height="wrap_content"
-        android:id="@+id/network_error"
-        android:padding="@dimen/message_padding"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/network_error_retry"
-        android:textSize="@dimen/message_font_size"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:visibility="gone"/>
+    <include layout="@layout/content_tweet_harvesting"/>
 
     <include layout="@layout/fab_tweet_posting"/>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

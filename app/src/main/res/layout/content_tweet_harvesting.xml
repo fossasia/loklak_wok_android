@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <TextView
+        android:layout_width="@dimen/message_width"
+        android:layout_height="wrap_content"
+        android:id="@+id/network_error"
+        android:padding="@dimen/message_padding"
+        android:layout_gravity="center"
+        android:text="@string/network_error_retry"
+        android:textSize="@dimen/message_font_size"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/harvested_tweets_count"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/tweet_harvesting_margin"
+        android:text="@string/zero_tweets"
+        android:textSize="@dimen/tweets_harvested_count"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/harvested__tweet_count_message"
+        android:layout_below="@id/harvested_tweets_count"
+        android:layout_centerHorizontal="true"
+        android:text="@string/count_message"
+        android:textSize="@dimen/message_font_size"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/harvested_tweets_container"
+        android:layout_marginTop="@dimen/tweet_harvesting_margin"
+        android:layout_below="@id/harvested__tweet_count_message"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_bar"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

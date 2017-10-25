@@ -8,6 +8,7 @@
     <dimen name="message_padding">24dp</dimen>
     <dimen name="message_width">240dp</dimen>
     <dimen name="clear_image_button_width">48dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
     <!-- row_tweet_search_suggest -->
     <dimen name="suggest_query_font_size">20sp</dimen>
