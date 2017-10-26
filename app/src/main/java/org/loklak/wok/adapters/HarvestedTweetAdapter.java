@@ -2,6 +2,7 @@
 package org.loklak.wok.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,20 +82,15 @@ public class HarvestedTweetAdapter
         void bind(Status harvestedTweet) {
             User user = harvestedTweet.getUser();
             userFullname.setText(user.getName());
-            username.setText(user.getScreenName());
+            username.setText("@"+user.getScreenName());
             tweetDate.setText(getReadableDate(harvestedTweet.getCreatedAt()));
             harvestedTweetTextView.setText(harvestedTweet.getText());
         }
 
         private String getReadableDate(Long miliseconds) {
-            Date date = new Date(miliseconds);
-            Locale locale = Locale.getDefault();
-            GregorianCalendar gregorianCalendar = new GregorianCalendar();
-            gregorianCalendar.setTime(date);
-            int day = gregorianCalendar.get(Calendar.DAY_OF_MONTH);
-            String month = gregorianCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, locale);
-            int year = gregorianCalendar.get(Calendar.YEAR);
-            return String.valueOf(day) + " " + month + ", " + String.valueOf(year);
+
+            CharSequence formatted = DateUtils.getRelativeTimeSpanString(miliseconds);
+            return formatted.toString();
         }
     }
 }
