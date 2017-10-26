@@ -82,7 +82,7 @@ public class HarvestedTweetAdapter
         void bind(Status harvestedTweet) {
             User user = harvestedTweet.getUser();
             userFullname.setText(user.getName());
-            username.setText("@"+user.getScreenName());
+            username.setText("@" + user.getScreenName());
             tweetDate.setText(getReadableDate(harvestedTweet.getCreatedAt()));
             harvestedTweetTextView.setText(harvestedTweet.getText());
         }
