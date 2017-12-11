@@ -44,7 +44,6 @@ File > New > Import Project > Locate build.gradle file in the cloned directory >
 * ButterKnife [docs](http://jakewharton.github.io/butterknife/javadoc/)
 * RxJava [docs](http://reactivex.io/RxJava/javadoc/)
 * RxAndroid [docs](https://www.javadoc.io/doc/io.reactivex/rxandroid/1.2.1)
-* Retrolambda [Github](https://github.com/orfjackal/retrolambda)
 * LiquidCore [docs](https://liquidplayer.github.io/LiquidCoreAndroid/0.2.2/)
 * Glide [docs](http://bumptech.github.io/glide/javadocs/images/360/index.html)
 
