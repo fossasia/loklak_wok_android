@@ -55,8 +55,6 @@
             android:id="@+id/tweet_search_suggestions" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/fab_tweet_posting"
-        />
+    <include layout="@layout/fab_tweet_posting"/>
 
 </RelativeLayout>
