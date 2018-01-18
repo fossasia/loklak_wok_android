@@ -5,6 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:fabSize="normal"
     android:id="@+id/tweet_post"
-    android:src="@drawable/twitter_white"
+    app:srcCompat="@drawable/twitter_white"
     android:layout_gravity="bottom|end"
-    android:layout_margin="@dimen/fab_margin" />
+    android:layout_margin="@dimen/fab_margin"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    />
