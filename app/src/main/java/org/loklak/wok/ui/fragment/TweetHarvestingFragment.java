@@ -303,6 +303,7 @@ public class TweetHarvestingFragment extends Fragment {
     }
 
     private void displayAndPostScrapedData() {
+        networkErrorTextView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         ConnectableObservable<ScrapedData> observable = Observable.interval(4, TimeUnit.SECONDS)
                 .flatMap(this::getSuggestionsPeriodically)
