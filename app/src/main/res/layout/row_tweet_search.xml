@@ -12,11 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/recycler_view_row_padding">
-
-        <ImageView
-            android:layout_width="@dimen/profile_pic_side"
-            android:layout_height="@dimen/profile_pic_side"
-            android:id="@+id/user_profile_pic"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/user_profile_pic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#FF000000"/>
 
         <LinearLayout
             android:layout_width="match_parent"
