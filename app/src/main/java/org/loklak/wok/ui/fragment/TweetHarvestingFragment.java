@@ -193,7 +193,8 @@ public class TweetHarvestingFragment extends Fragment {
 
     @OnClick(R.id.network_error)
     public void onNetworkErrorTextViewClick() {
-        ButterKnife.apply(networkViews, VISIBLE);
+        networkViews.get(0).setVisibility(View.VISIBLE);
+        networkViews.get(1).setVisibility(View.VISIBLE);
         networkErrorTextView.setVisibility(View.GONE);
         mSuggestionQuerries.clear();
         displayAndPostScrapedData();
