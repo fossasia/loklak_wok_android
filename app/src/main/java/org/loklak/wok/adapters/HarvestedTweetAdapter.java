@@ -13,11 +13,7 @@ import org.loklak.wok.model.harvest.User;
 import org.loklak.wok.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
