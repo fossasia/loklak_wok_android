@@ -5,9 +5,9 @@
 
 Loklak Wok Android is a message harvesting peer for the loklak_server.
 
-Users can also search tweets from the app, the displayed tweets are latest tweets, tweets containing images and videos. Along with that, the app provides tweet posting feature. Users can directly post tweet from the app. Not only text, but images can also be tweeted from the app.
+Users can also search tweets from the app, the displayed tweets are the latest tweets, tweets containing images and videos. Along with that, the app provides a tweet posting feature. Users can directly post the tweet from the app. Not only text, but images can also be tweeted from the app.
 
-### Screenshots of app
+### Screenshots of the app
 
 <table>
   <tr>
@@ -48,7 +48,7 @@ Before you begin, you should already have the Android Studio SDK downloaded and 
 
 6. To Build the app, go to _Build>Make Project_ (or alternatively press the Make Project icon in the toolbar).
 
-7. If the app was built successfully, you can test it by running it on either a real device or an emulated one by going to _Run>Run 'app'_ or presing the Run icon in the toolbar.
+7. If the app was built successfully, you can test it by running it on either a real device or an emulated one by going to _Run>Run 'app'_ or pressing the Run icon in the toolbar.
 
 ## Libraries Used
 * Retrofit [docs](http://square.github.io/retrofit/2.x/retrofit/)
@@ -85,7 +85,7 @@ supposed to make a pull request to master. PRs to master must pass a build check
 For contributions please read the [CODESTYLE](https://source.android.com/source/code-style) carefully.
 An additional rule: Maximum 100 characters per line.
 
-Try to remove as much warnings (yellow markings on the right side of Android Studio) as possible, 
+Try to remove as many warnings (yellow markings on the right side of Android Studio) as possible, 
 It's not completely possible to remove all the warnings, but over a period of time, we should try to
  make it as complete as possible.
 
