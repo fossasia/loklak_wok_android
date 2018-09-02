@@ -59,7 +59,7 @@ dependencies {
     implementation 'com.android.support:support-v4:25.3.1'
     implementation 'com.android.support:design:25.3.1'
     implementation 'com.android.support:cardview-v7:25.3.1'
-
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'org.joda:joda-convert:1.8'
     implementation 'joda-time:joda-time:2.9.4'
 
