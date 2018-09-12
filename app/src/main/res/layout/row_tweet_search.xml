@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/recycler_view_row_top_bottom_margin"
     android:layout_marginLeft="@dimen/recycler_view_row_left_right_margin"
     android:layout_marginRight="@dimen/recycler_view_row_left_right_margin"
     android:layout_marginTop="@dimen/recycler_view_row_top_bottom_margin"
-    android:layout_marginBottom="@dimen/recycler_view_row_top_bottom_margin">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,62 +16,68 @@
         android:padding="@dimen/recycler_view_row_padding">
 
         <ImageView
+            android:id="@+id/user_profile_pic"
             android:layout_width="@dimen/profile_pic_side"
-            android:layout_height="@dimen/profile_pic_side"
-            android:id="@+id/user_profile_pic"/>
+            android:layout_height="@dimen/profile_pic_side" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="8dp">
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:id="@+id/user_fullname"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:ellipsize="end"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/username"
-                    android:maxLines="1"
-                    android:ellipsize="end"/>
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tweet_date" />
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    tools:text="Full Name" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    tools:text="Username" />
+
+                <TextView
+                    android:id="@+id/tweet_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    tools:text="Date" />
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tweet_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tweet_text"
+                android:layout_marginTop="8dp"
                 android:textColor="@android:color/black"
-                android:layout_marginTop="8dp" />
-            
+                tools:text="Tweet Body" />
+
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/tweet_photos"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:id="@+id/tweet_photos"
                 android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -80,7 +88,7 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/reply"/>
+                        app:srcCompat="@drawable/reply" />
 
                 </LinearLayout>
 
@@ -93,15 +101,15 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/retweet"/>
+                        app:srcCompat="@drawable/retweet" />
 
                     <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
                         android:id="@+id/number_retweets"
-                        android:layout_marginLeft="4dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="4dp"
                         android:gravity="center"
-                        android:text="0"/>
+                        tools:text="0" />
 
                 </LinearLayout>
 
@@ -114,15 +122,15 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/heart"/>
+                        app:srcCompat="@drawable/heart" />
 
                     <TextView
+                        android:id="@+id/number_likes"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:id="@+id/number_likes"
-                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
                         android:gravity="center"
-                        android:text="0"/>
+                        tools:text="0" />
 
                 </LinearLayout>
 
