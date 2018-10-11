@@ -76,6 +76,8 @@ This is an Open Source project and we would be happy to see contributors who rep
 feature requests submitting pull requests as well. Please report issues here 
 https://github.com/fossasia/loklak_wok_android/issues.
 
+Follow [Github Flow](https://help.github.com/articles/github-flow/) for collaboration.
+
 ## Branch Policy
 * **master** All development goes on in this branch. If you're making a contribution, you are 
 supposed to make a pull request to master. PRs to master must pass a build check on Travis.
