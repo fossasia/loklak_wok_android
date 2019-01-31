@@ -4,7 +4,7 @@ import . . .
 
 public class TweetHarvestingActivity extends AppCompatActivity {
 
-    long BackPressed;
+    private static long BackPressed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,10 +22,9 @@ public class TweetHarvestingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (BackPressed+1000>System.currentTimeMillis()) {
+        if (BackPressed+2000>System.currentTimeMillis()) {
             
             super.onBackPressed();
-            return;
         }
         else{
             Toast.makeText(getBaseContext(),"Press once again to exit",Toast.LENGTH_SHORT).show();
