@@ -1,6 +1,13 @@
 package org.loklak.wok.ui.activity;
 
-import . . .
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import org.loklak.wok.ui.fragment.TweetHarvestingFragment;
+import org.loklak.wok.R;
 
 public class TweetHarvestingActivity extends AppCompatActivity {
 
